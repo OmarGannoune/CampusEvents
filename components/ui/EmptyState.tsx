@@ -23,18 +23,22 @@ export function EmptyState({ icon, title, subtitle, action }: EmptyStateProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
-        <Icon name={icon} size={20} color={Colors.purple} />
+        <Icon name={icon} size={32} color={Colors.purple} />
       </View>
-      <Text variant="sectionTitle" color={Colors.textPrimary}>
-        {title}
-      </Text>
-      {subtitle ? (
-        <Text variant="caption" color={Colors.textSecondary} align="center">
-          {subtitle}
+      <View style={styles.textContainer}>
+        <Text variant="sectionTitle" color={Colors.textPrimary} align="center">
+          {title}
         </Text>
-      ) : null}
+        {subtitle ? (
+          <Text variant="caption" color={Colors.textSecondary} align="center" style={styles.subtitle}>
+            {subtitle}
+          </Text>
+        ) : null}
+      </View>
       {action ? (
-        <Button label={action.label} variant="ghost" onPress={action.onPress} />
+        <View style={styles.actionContainer}>
+          <Button label={action.label} variant="ghost" onPress={action.onPress} />
+        </View>
       ) : null}
     </View>
   );
@@ -44,15 +48,30 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacing.xl,
-    gap: Spacing.sm,
+    paddingVertical: Spacing.xl * 1.5,
+    paddingHorizontal: Spacing.xl,
+    gap: Spacing.lg,
   },
   iconCircle: {
-    width: 48,
-    height: 48,
+    width: 80,
+    height: 80,
     borderRadius: Radius.full,
     backgroundColor: Colors.purpleLight,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: Spacing.xs,
+  },
+  textContainer: {
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  subtitle: {
+    lineHeight: 20,
+    marginTop: 4,
+  },
+  actionContainer: {
+    marginTop: Spacing.md,
+    width: '100%',
+    maxWidth: 240,
   },
 });

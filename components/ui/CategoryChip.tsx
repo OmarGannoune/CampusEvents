@@ -33,11 +33,12 @@ export function CategoryChip({ category, size = 'md' }: CategoryChipProps) {
       style={[
         styles.base,
         size === 'sm' ? styles.small : styles.medium,
-        { backgroundColor: colors.bg },
+        { backgroundColor: colors.bg, borderColor: colors.accent },
       ]}>
       <Text
         variant={size === 'sm' ? 'tiny' : 'caption'}
-        color={colors.text}>
+        color={colors.text}
+        style={styles.text}>
         {category}
       </Text>
     </View>
@@ -48,13 +49,18 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: Radius.full,
     alignSelf: 'flex-start',
+    borderWidth: 1,
+  },
+  text: {
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
   small: {
-    paddingVertical: Spacing.xs,
+    paddingVertical: 2,
     paddingHorizontal: Spacing.sm,
   },
   medium: {
-    paddingVertical: Spacing.sm,
+    paddingVertical: 4,
     paddingHorizontal: Spacing.md,
   },
 });

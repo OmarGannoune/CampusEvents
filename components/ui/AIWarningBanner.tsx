@@ -9,7 +9,7 @@ export function AIWarningBanner() {
   return (
     <View style={styles.banner}>
       <View style={styles.row}>
-        <Icon name="alert-triangle" size={14} color={Colors.amberDark} />
+        <Icon name="alert-triangle" size={16} color={Colors.amberDark} />
         <Text variant="caption" color={Colors.amberDark} style={styles.text}>
           Ne soumettez pas de données personnelles ou sensibles à cet assistant.
         </Text>
@@ -21,8 +21,10 @@ export function AIWarningBanner() {
 const styles = StyleSheet.create({
   banner: {
     backgroundColor: Colors.amberLight,
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(146, 64, 14, 0.2)', // amberDark with opacity
   },
   row: {
     flexDirection: 'row',
@@ -31,5 +33,6 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+    fontWeight: '500',
   },
 });

@@ -23,9 +23,9 @@ type ButtonProps = PressableProps & {
 };
 
 const SIZE_STYLES: Record<ButtonSize, ViewStyle> = {
-  sm: { paddingVertical: Spacing.xs, paddingHorizontal: Spacing.md },
-  md: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.lg },
-  lg: { paddingVertical: Spacing.md, paddingHorizontal: Spacing.xl },
+  sm: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md, minHeight: 36 },
+  md: { paddingVertical: 12, paddingHorizontal: Spacing.lg, minHeight: 48 },
+  lg: { paddingVertical: 16, paddingHorizontal: Spacing.xl, minHeight: 56 },
 };
 
 export function Button({
@@ -43,7 +43,7 @@ export function Button({
 }: ButtonProps) {
   const content = children ?? label;
   const isDisabled = !!disabled;
-  const iconSize = size === 'lg' ? 18 : size === 'sm' ? 14 : 16;
+  const iconSize = size === 'lg' ? 20 : size === 'sm' ? 16 : 18;
 
   const variantStyle = (() => {
     if (isDisabled) {
@@ -81,14 +81,21 @@ export function Button({
     <Pressable
       {...props}
       disabled={isDisabled}
-      style={[styles.button, SIZE_STYLES[size], fullWidth && styles.fullWidth, variantStyle, style]}>
+      style={({ pressed }) => [
+        styles.button,
+        SIZE_STYLES[size],
+        fullWidth && styles.fullWidth,
+        variantStyle,
+        pressed && !isDisabled && styles.pressed,
+        style,
+      ]}>
       <View style={styles.content}>
         {iconLeft ? <Icon name={iconLeft} size={iconSize} color={textColor} /> : null}
         {typeof content === 'string' ? (
           <Text
             variant="label"
             color={textColor}
-            style={uppercase && styles.uppercase}>
+            style={[styles.text, uppercase && styles.uppercase]}>
             {content}
           </Text>
         ) : (
@@ -102,36 +109,57 @@ export function Button({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden', // to keep border radius clean
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.sm,
+  },
+  text: {
+    fontWeight: '600',
   },
   fullWidth: {
     alignSelf: 'stretch',
   },
   primary: {
     backgroundColor: Colors.purple,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   ghost: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
     borderColor: Colors.borderStrong,
   },
   danger: {
     backgroundColor: Colors.danger,
+    shadowColor: Colors.danger,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   dangerGhost: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
     borderColor: Colors.danger,
   },
   disabled: {
     backgroundColor: Colors.borderDefault,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  pressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
   },
   uppercase: {
     textTransform: 'uppercase',

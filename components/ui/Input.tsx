@@ -17,9 +17,9 @@ type InputProps = TextInputProps & {
 };
 
 const SIZE_STYLES: Record<InputSize, ViewStyle> = {
-  sm: { paddingVertical: Spacing.xs, paddingHorizontal: Spacing.sm },
-  md: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md },
-  lg: { paddingVertical: Spacing.md, paddingHorizontal: Spacing.lg },
+  sm: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.sm, minHeight: 40 },
+  md: { paddingVertical: 12, paddingHorizontal: Spacing.md, minHeight: 52 },
+  lg: { paddingVertical: 16, paddingHorizontal: Spacing.lg, minHeight: 60 },
 };
 
 export function Input({
@@ -35,14 +35,14 @@ export function Input({
   ...props
 }: InputProps) {
   const [focused, setFocused] = useState(false);
-  const borderColor = focused ? Colors.borderStrong : Colors.borderDefault;
+  const borderColor = focused ? Colors.purple : Colors.borderDefault;
 
   return (
     <View
       style={[
         styles.container,
         SIZE_STYLES[size],
-        { borderColor },
+        { borderColor, borderWidth: focused ? 1.5 : 1 },
         multiline && styles.multiline,
         containerStyle,
       ]}>
@@ -72,19 +72,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     gap: Spacing.sm,
   },
   input: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16, // Better for accessibility
     color: Colors.textPrimary,
   },
   multiline: {
     alignItems: 'flex-start',
   },
   inputMultiline: {
-    minHeight: 90,
+    minHeight: 100,
   },
 });

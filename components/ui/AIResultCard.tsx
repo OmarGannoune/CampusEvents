@@ -24,7 +24,7 @@ export function AIResultCard({
     <Pressable
       disabled={!onPress}
       onPress={onPress}
-      style={styles.pressable}
+      style={({ pressed }) => [styles.pressable, pressed && onPress && styles.pressed]}
       accessibilityRole={onPress ? 'button' : 'summary'}>
       <Card style={[styles.card, { borderLeftColor: accentColor }]}>
         <View style={styles.headerRow}>
@@ -47,10 +47,14 @@ export function AIResultCard({
 
 const styles = StyleSheet.create({
   pressable: {
-    borderRadius: Radius.lg,
+    borderRadius: Radius.xl,
+  },
+  pressed: {
+    opacity: 0.95,
+    transform: [{ scale: 0.98 }],
   },
   card: {
-    borderLeftWidth: 2,
+    borderLeftWidth: 4, // Thicker for better accent emphasis
     padding: Spacing.lg,
   },
   headerRow: {
@@ -61,6 +65,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
+    fontWeight: '700',
   },
   badge: {
     borderWidth: 1,
@@ -68,8 +73,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     paddingHorizontal: Spacing.sm,
     paddingVertical: 2,
+    fontWeight: '600',
   },
   description: {
     marginTop: Spacing.sm,
+    lineHeight: 20,
   },
 });

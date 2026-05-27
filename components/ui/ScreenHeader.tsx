@@ -36,8 +36,8 @@ export function ScreenHeader({
           {showBack ? (
             <IconButton
               icon="arrow-left"
-              size={28}
-              iconSize={16}
+              size={36}
+              iconSize={20}
               color={Colors.textOnDark}
               onPress={onBack}
             />
@@ -73,27 +73,33 @@ export function ScreenHeader({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.dark,
-    paddingTop: 48,
+    paddingTop: 56, // More breathing room at top
     paddingHorizontal: Spacing.lg,
-    paddingBottom: 14,
-    borderBottomLeftRadius: Radius.lg,
-    borderBottomRightRadius: Radius.lg,
+    paddingBottom: 20,
+    borderBottomLeftRadius: Radius.xl, // Softer curves
+    borderBottomRightRadius: Radius.xl,
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 10,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   leftSlot: {
-    width: 32,
+    width: 40,
   },
   rightSlot: {
-    width: 32,
+    width: 40,
     alignItems: 'flex-end',
   },
   titleBlock: {
     flex: 1,
   },
   subtitle: {
-    marginTop: 6,
+    marginTop: 8,
   },
 });

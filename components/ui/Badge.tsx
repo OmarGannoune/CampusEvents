@@ -12,7 +12,7 @@ type BadgeProps = {
 
 export function Badge({ label, backgroundColor, textColor, style }: BadgeProps) {
   return (
-    <View style={[styles.container, { backgroundColor }, style]}>
+    <View style={[styles.container, { backgroundColor, borderColor: textColor }, style]}>
       <Text variant="tiny" color={textColor} style={styles.text}>
         {label}
       </Text>
@@ -23,11 +23,14 @@ export function Badge({ label, backgroundColor, textColor, style }: BadgeProps) 
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     borderRadius: Radius.full,
     alignSelf: 'flex-start',
+    borderWidth: 1,
   },
   text: {
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
 });

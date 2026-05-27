@@ -67,20 +67,27 @@ export function EventCard({ event, isFavorited, onPress, onToggleFavorite }: Eve
   })();
 
   return (
-    <Pressable style={styles.pressable} onPress={onPress} accessibilityRole="button">
+    <Pressable
+      style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
+      onPress={onPress}
+      accessibilityRole="button">
       <Card style={styles.card}>
         <View style={styles.topRow}>
           <CategoryChip category={event.category} size="sm" />
-          <Pressable onPress={onToggleFavorite} accessibilityRole="button">
+          <Pressable
+            onPress={onToggleFavorite}
+            accessibilityRole="button"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={({ pressed }) => pressed && styles.iconPressed}>
             <Icon
               name="heart"
-              size={16}
+              size={20}
               color={isFavorited ? Colors.purple : Colors.purpleMid}
               fill={isFavorited ? Colors.purple : 'none'}
             />
           </Pressable>
         </View>
-        <Text variant="sectionTitle" color={Colors.textPrimary}>
+        <Text variant="sectionTitle" color={Colors.textPrimary} style={styles.title}>
           {event.title}
         </Text>
         <Text variant="caption" color={Colors.textSecondary}>
@@ -94,7 +101,11 @@ export function EventCard({ event, isFavorited, onPress, onToggleFavorite }: Eve
 
 const styles = StyleSheet.create({
   pressable: {
-    borderRadius: Radius.lg,
+    borderRadius: Radius.xl,
+  },
+  pressed: {
+    opacity: 0.95,
+    transform: [{ scale: 0.98 }],
   },
   card: {
     padding: Spacing.lg,
@@ -104,6 +115,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  title: {
+    marginTop: Spacing.xs,
+  },
+  iconPressed: {
+    opacity: 0.6,
+    transform: [{ scale: 0.9 }],
   },
   badge: {
     marginTop: Spacing.sm,
