@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/Button';
 import type { IconName } from '@/components/ui/Icon';
 import { Icon } from '@/components/ui/Icon';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
-import { Typography } from '@/constants/typography';
 
 type EmptyStateAction = {
   label: string;
@@ -24,12 +25,16 @@ export function EmptyState({ icon, title, subtitle, action }: EmptyStateProps) {
       <View style={styles.iconCircle}>
         <Icon name={icon} size={20} color={Colors.purple} />
       </View>
-      <Text style={[Typography.sectionTitle, styles.title]}>{title}</Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      <Text variant="sectionTitle" color={Colors.textPrimary}>
+        {title}
+      </Text>
+      {subtitle ? (
+        <Text variant="caption" color={Colors.textSecondary} align="center">
+          {subtitle}
+        </Text>
+      ) : null}
       {action ? (
-        <Pressable style={styles.actionButton} onPress={action.onPress}>
-          <Text style={styles.actionText}>{action.label}</Text>
-        </Pressable>
+        <Button label={action.label} variant="ghost" onPress={action.onPress} />
       ) : null}
     </View>
   );
@@ -49,26 +54,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.purpleLight,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    color: Colors.textPrimary,
-  },
-  subtitle: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  actionButton: {
-    marginTop: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.borderStrong,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.sm,
-  },
-  actionText: {
-    color: Colors.purple,
-    fontSize: 12,
-    fontWeight: '500',
   },
 });

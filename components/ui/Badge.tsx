@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { Radius } from '@/constants/spacing';
 
 type BadgeProps = {
@@ -12,7 +13,9 @@ type BadgeProps = {
 export function Badge({ label, backgroundColor, textColor, style }: BadgeProps) {
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
-      <Text style={[styles.text, { color: textColor }]}>{label}</Text>
+      <Text variant="tiny" color={textColor} style={styles.text}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -25,7 +28,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   text: {
-    fontSize: 11,
     fontWeight: '500',
   },
 });

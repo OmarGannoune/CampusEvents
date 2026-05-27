@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { FilterChips } from '@/components/student/FilterChips';
 import { ProfileButton } from '@/components/student/ProfileButton';
@@ -10,6 +10,7 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { EventCard } from '@/components/ui/EventCard';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
@@ -86,12 +87,18 @@ export default function EventsCatalogueScreen() {
           <FilterChips selected={selectedCategory} onSelect={setSelectedCategory} />
           <View style={styles.periodToggle}>
             <Pressable onPress={() => setPeriod('upcoming')}>
-              <Text style={[styles.periodText, period === 'upcoming' && styles.periodActive]}>
+              <Text
+                variant="caption"
+                color={period === 'upcoming' ? Colors.purple : Colors.textSecondary}
+                style={[styles.periodText, period === 'upcoming' && styles.periodActive]}>
                 À venir
               </Text>
             </Pressable>
             <Pressable onPress={() => setPeriod('past')}>
-              <Text style={[styles.periodText, period === 'past' && styles.periodActive]}>
+              <Text
+                variant="caption"
+                color={period === 'past' ? Colors.purple : Colors.textSecondary}
+                style={[styles.periodText, period === 'past' && styles.periodActive]}>
                 Passés
               </Text>
             </Pressable>
@@ -148,11 +155,8 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   periodText: {
-    fontSize: 12,
-    color: Colors.textSecondary,
   },
   periodActive: {
-    color: Colors.purple,
     fontWeight: '500',
   },
   list: {

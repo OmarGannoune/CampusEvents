@@ -1,11 +1,14 @@
 import { useRouter } from 'expo-router';
-import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Pressable, SectionList, StyleSheet, View } from 'react-native';
 
 import { ProfileButton } from '@/components/student/ProfileButton';
+import { Badge } from '@/components/ui/Badge';
+import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
+import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 import { getEventById } from '@/database/events';
 import { useRegistrations } from '@/hooks/useRegistrations';
@@ -52,31 +55,40 @@ export default function RegistrationsScreen() {
             keyExtractor={(item) => item.registration.id}
             contentContainerStyle={styles.list}
             renderSectionHeader={({ section }) => (
-              <Text style={styles.sectionTitle}>{section.title}</Text>
+              <Text variant="label" color={Colors.textSecondary} style={styles.sectionTitle}>
+                {section.title}
+              </Text>
             )}
             renderItem={({ item }) => {
               const isPast = new Date(item.event.startDateTime).getTime() < now;
+              const badge = isPast
+                ? { label: 'Passé', backgroundColor: Colors.borderDefault, textColor: Colors.textSecondary }
+                : { label: 'Confirmé', backgroundColor: Colors.successLight, textColor: Colors.successDark };
               return (
-                <View style={styles.card}>
+                <Card style={styles.card}>
                   <View style={styles.cardRow}>
                     <View style={styles.cardLeft}>
-                      <Text style={styles.cardTitle}>{item.event.title}</Text>
-                      <Text style={styles.cardMeta}>
+                      <Text variant="sectionTitle" color={Colors.textPrimary}>
+                        {item.event.title}
+                      </Text>
+                      <Text variant="caption" color={Colors.textSecondary}>
                         {new Date(item.event.startDateTime).toLocaleDateString('fr-FR')}
                       </Text>
                     </View>
-                    <View style={[styles.badge, isPast && styles.badgePast]}>
-                      <Text style={[styles.badgeText, isPast && styles.badgeTextPast]}>
-                        {isPast ? 'Passé' : 'Confirmé'}
-                      </Text>
-                    </View>
+                    <Badge
+                      label={badge.label}
+                      backgroundColor={badge.backgroundColor}
+                      textColor={badge.textColor}
+                    />
                   </View>
                   {!isPast ? (
                     <Pressable onPress={() => cancelEventRegistration(item.event.id)}>
-                      <Text style={styles.cancelText}>Annuler l'inscription</Text>
+                      <Text variant="caption" color={Colors.danger}>
+                        Annuler l'inscription
+                      </Text>
                     </Pressable>
                   ) : null}
-                </View>
+                </Card>
               );
             }}
           />
@@ -100,16 +112,9 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xl,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.textSecondary,
     marginBottom: Spacing.sm,
   },
   card: {
-    backgroundColor: Colors.card,
-    borderWidth: 0.5,
-    borderColor: Colors.borderCard,
-    borderRadius: Radius.lg,
     padding: Spacing.lg,
     gap: Spacing.sm,
   },
@@ -122,34 +127,7 @@ const styles = StyleSheet.create({
     gap: 4,
     flex: 1,
   },
-  cardTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.textPrimary,
-  },
-  cardMeta: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-  },
-  badge: {
-    backgroundColor: Colors.successLight,
-    borderRadius: Radius.full,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-  },
-  badgePast: {
-    backgroundColor: Colors.borderDefault,
-  },
-  badgeText: {
-    fontSize: 11,
-    color: Colors.successDark,
-    fontWeight: '500',
-  },
-  badgeTextPast: {
-    color: Colors.textSecondary,
-  },
   cancelText: {
-    fontSize: 12,
     color: Colors.danger,
   },
 });

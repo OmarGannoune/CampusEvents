@@ -1,8 +1,8 @@
 import { Redirect } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Typography } from '@/constants/typography';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
 
@@ -13,9 +13,13 @@ export default function Index() {
   if (isLoading || !isReady) {
     return (
       <View style={styles.splash}>
-        <Text style={[Typography.logo, styles.logo]}>
-          <Text style={styles.logoPrimary}>Campus</Text>
-          <Text style={styles.logoAccent}>Events</Text>
+        <Text variant="logo" color={Colors.textOnDark}>
+          <Text variant="logo" color={Colors.textOnDark}>
+            Campus
+          </Text>
+          <Text variant="logo" color={Colors.purpleMid}>
+            Events
+          </Text>
         </Text>
       </View>
     );
@@ -38,14 +42,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logo: {
-    color: Colors.textOnDark,
-  },
-  logoPrimary: {
-    color: Colors.textOnDark,
-  },
-  logoAccent: {
-    color: Colors.purpleMid,
   },
 });

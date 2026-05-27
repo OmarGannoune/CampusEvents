@@ -1,10 +1,15 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { TagPill } from '@/components/ui/TagPill';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
+import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import type { StudentProfile } from '@/types';
@@ -91,47 +96,31 @@ export default function StudentProfileScreen() {
     <View style={styles.container}>
       <ScreenHeader title="Profil etudiant" showBack onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <View style={styles.field}>
-          <Text style={styles.label}>Nom affiche</Text>
-          <TextInput
+        <Field label="Nom affiche">
+          <Input
             value={displayName}
             onChangeText={setDisplayName}
             placeholder={defaultName}
-            placeholderTextColor={Colors.textHint}
-            style={styles.input}
           />
-        </View>
+        </Field>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Filiere</Text>
-          <TextInput
+        <Field label="Filiere">
+          <Input
             value={filiere}
             onChangeText={setFiliere}
             placeholder="Genie Informatique"
-            placeholderTextColor={Colors.textHint}
-            style={styles.input}
           />
-        </View>
+        </Field>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Annee</Text>
-          <TextInput
-            value={annee}
-            onChangeText={setAnnee}
-            placeholder="Master 1"
-            placeholderTextColor={Colors.textHint}
-            style={styles.input}
-          />
-        </View>
+        <Field label="Annee">
+          <Input value={annee} onChangeText={setAnnee} placeholder="Master 1" />
+        </Field>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Centres d'interet</Text>
-          <TextInput
+        <Field label="Centres d'interet">
+          <Input
             value={interestInput}
             onChangeText={setInterestInput}
             placeholder="IA/ML, Cloud, Startup"
-            placeholderTextColor={Colors.textHint}
-            style={styles.input}
             onSubmitEditing={handleInterestSubmit}
           />
           <View style={styles.tagsRow}>
@@ -139,23 +128,26 @@ export default function StudentProfileScreen() {
               <Pressable
                 key={tag}
                 onPress={() => setInterests(interests.filter((item) => item !== tag))}>
-                <View style={styles.tagPill}>
-                  <Text style={styles.tagText}>{tag}</Text>
-                </View>
+                <TagPill label={tag} />
               </Pressable>
             ))}
           </View>
-        </View>
+        </Field>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? (
+          <Text variant="caption" color={Colors.danger}>
+            {error}
+          </Text>
+        ) : null}
 
-        <Pressable style={styles.submitButton} onPress={handleSave}>
-          <Text style={styles.submitText}>Enregistrer</Text>
-        </Pressable>
+        <Button label="Enregistrer" onPress={handleSave} />
 
-        <Pressable style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Se deconnecter</Text>
-        </Pressable>
+        <Button
+          label="Se deconnecter"
+          variant="danger-ghost"
+          onPress={handleLogout}
+          style={styles.logoutButton}
+        />
       </ScrollView>
     </View>
   );
@@ -170,69 +162,12 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     gap: Spacing.md,
   },
-  field: {
-    gap: Spacing.xs,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.textPrimary,
-  },
-  input: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: 14,
-    color: Colors.textPrimary,
-  },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.sm,
   },
-  tagPill: {
-    backgroundColor: Colors.purpleLight,
-    borderRadius: Radius.full,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-  },
-  tagText: {
-    fontSize: 11,
-    color: Colors.purple,
-  },
-  error: {
-    fontSize: 12,
-    color: Colors.danger,
-  },
-  submitButton: {
-    backgroundColor: Colors.purple,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  submitText: {
-    color: Colors.textOnDark,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
   logoutButton: {
     marginTop: Spacing.sm,
-    borderWidth: 1,
-    borderColor: Colors.danger,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  logoutText: {
-    color: Colors.danger,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
   },
 });

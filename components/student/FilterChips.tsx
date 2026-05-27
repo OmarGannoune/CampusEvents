@@ -1,10 +1,11 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import type { EventCategory } from '@/types';
 
 import { CategoryChip } from '@/components/ui/CategoryChip';
+import { Text } from '@/components/ui/Text';
 
 type FilterChipsProps = {
   selected: EventCategory | 'all';
@@ -18,7 +19,12 @@ export function FilterChips({ selected, onSelect }: FilterChipsProps) {
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
       <Pressable onPress={() => onSelect('all')}>
         <View style={[styles.allChip, selected === 'all' && styles.allChipActive]}>
-          <Text style={[styles.allText, selected === 'all' && styles.allTextActive]}>Tous</Text>
+          <Text
+            variant="label"
+            color={selected === 'all' ? Colors.textOnDark : Colors.purple}
+            style={styles.allText}>
+            Tous
+          </Text>
         </View>
       </Pressable>
       {CATEGORIES.map((category) => (
@@ -47,19 +53,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderStrong,
     paddingHorizontal: Spacing.md,
-    paddingVertical: 4,
+    paddingVertical: Spacing.xs,
   },
   allChipActive: {
     backgroundColor: Colors.purple,
     borderColor: Colors.purple,
   },
   allText: {
-    fontSize: 11,
-    color: Colors.purple,
     fontWeight: '500',
-  },
-  allTextActive: {
-    color: Colors.textOnDark,
   },
   categoryWrapper: {
     borderRadius: Radius.full,

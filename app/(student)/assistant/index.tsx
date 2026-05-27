@@ -1,13 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ProfileButton } from '@/components/student/ProfileButton';
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
 import type { IconName } from '@/components/ui/Icon';
 import { Icon } from '@/components/ui/Icon';
+import { Input } from '@/components/ui/Input';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 
@@ -88,21 +90,25 @@ export default function AssistantHubScreen() {
 
         <Pressable style={styles.settingsRow} onPress={() => setShowApiInput(!showApiInput)}>
           <Icon name="settings" size={14} color={Colors.textSecondary} />
-          <Text style={styles.settingsText}>Clé API</Text>
+          <Text variant="caption" color={Colors.textSecondary}>
+            Clé API
+          </Text>
         </Pressable>
         {showApiInput ? (
-          <TextInput
+          <Input
             value={apiKey}
             onChangeText={handleSaveKey}
             placeholder="sk-ant-..."
-            placeholderTextColor={Colors.textHint}
-            style={styles.input}
+            autoCapitalize="none"
+            containerStyle={styles.inputContainer}
           />
         ) : null}
 
         {!hasKey ? (
           <View style={styles.keyBanner}>
-            <Text style={styles.keyBannerText}>Configurez votre clé API pour utiliser l'assistant.</Text>
+            <Text variant="caption" color={Colors.amberDark}>
+              Configurez votre clé API pour utiliser l'assistant.
+            </Text>
           </View>
         ) : null}
 
@@ -118,8 +124,12 @@ export default function AssistantHubScreen() {
                 !hasKey && styles.cardDisabled,
               ]}>
               <Icon name={feature.icon} size={18} color={feature.accent} />
-              <Text style={styles.cardTitle}>{feature.title}</Text>
-              <Text style={styles.cardDescription}>{feature.description}</Text>
+              <Text variant="label" color={Colors.textPrimary}>
+                {feature.title}
+              </Text>
+              <Text variant="caption" color={Colors.textSecondary}>
+                {feature.description}
+              </Text>
             </Pressable>
           ))}
         </View>
@@ -143,28 +153,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
-  settingsText: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-  },
-  input: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
+  inputContainer: {
     borderColor: Colors.borderStrong,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: 12,
-    color: Colors.textPrimary,
   },
   keyBanner: {
     backgroundColor: Colors.amberLight,
     borderRadius: Radius.md,
     padding: Spacing.md,
-  },
-  keyBannerText: {
-    fontSize: 12,
-    color: Colors.amberDark,
   },
   grid: {
     flexDirection: 'row',
@@ -183,14 +178,5 @@ const styles = StyleSheet.create({
   },
   cardDisabled: {
     opacity: 0.5,
-  },
-  cardTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: Colors.textPrimary,
-  },
-  cardDescription: {
-    fontSize: 11,
-    color: Colors.textSecondary,
   },
 });

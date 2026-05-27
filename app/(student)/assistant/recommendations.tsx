@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ProfileButton } from '@/components/student/ProfileButton';
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 
@@ -20,7 +21,9 @@ export default function AssistantRecommendationsScreen() {
       />
       <View style={styles.content}>
         <AIWarningBanner />
-        <Text style={styles.helper}>Intégration LLM en cours.</Text>
+        <Text variant="caption" color={Colors.textSecondary}>
+          Intégration LLM en cours.
+        </Text>
       </View>
     </View>
   );
@@ -33,9 +36,5 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.lg,
-  },
-  helper: {
-    fontSize: 12,
-    color: Colors.textSecondary,
   },
 });

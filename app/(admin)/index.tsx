@@ -1,17 +1,19 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { DeleteConfirmModal } from '@/components/admin/DeleteConfirmModal';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { CategoryChip } from '@/components/ui/CategoryChip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Icon } from '@/components/ui/Icon';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
-import { Typography } from '@/constants/typography';
+import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 import { deleteEvent } from '@/database/events';
 import { useEvents } from '@/hooks/useEvents';
@@ -39,30 +41,39 @@ export default function AdminEventListScreen() {
   const renderItem = ({ item }: { item: Event }) => {
     const isPast = new Date(item.startDateTime).getTime() < Date.now();
     return (
-      <View style={[styles.row, isPast && styles.rowPast]}>
-        <View style={styles.rowLeft}>
+      <Card style={[styles.row, isPast && styles.rowPast]}>
+        <Pressable
+          style={styles.rowLeft}
+          onPress={() => router.push(`/(admin)/${item.id}`)}
+          accessibilityRole="button">
           <CategoryChip category={item.category} size="sm" />
-          <Text style={[Typography.sectionTitle, styles.rowTitle]}>{item.title}</Text>
-          <Text style={styles.rowMeta}>
+          <Text variant="sectionTitle" color={Colors.textPrimary}>
+            {item.title}
+          </Text>
+          <Text variant="caption" color={Colors.textSecondary}>
             {new Date(item.startDateTime).toLocaleDateString('fr-FR')} · {item.locationName}
           </Text>
-        </View>
+        </Pressable>
         <View style={styles.rowActions}>
-          <Pressable
-            style={[styles.actionButton, styles.editButton]}
-            onPress={() => router.push(`/(admin)/edit/${item.id}`)}>
-            <Text style={styles.editText}>Modifier</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.actionButton, styles.deleteButton]}
+          <Button
+            label="Modifier"
+            size="sm"
+            variant="ghost"
+            fullWidth={false}
+            onPress={() => router.push(`/(admin)/edit/${item.id}`)}
+          />
+          <Button
+            label="Supprimer"
+            size="sm"
+            variant="danger-ghost"
+            fullWidth={false}
             onPress={() => {
               setSelected(item);
               setShowDelete(true);
-            }}>
-            <Text style={styles.deleteText}>Supprimer</Text>
-          </Pressable>
+            }}
+          />
         </View>
-      </View>
+      </Card>
     );
   };
 
@@ -88,6 +99,12 @@ export default function AdminEventListScreen() {
         }
       />
       <View style={styles.content}>
+        <Button
+          label="Creer un evenement"
+          size="lg"
+          iconLeft="plus"
+          onPress={() => router.push('/(admin)/create')}
+        />
         {isLoading ? (
           <View style={styles.skeletonList}>
             {[0, 1, 2].map((key) => (
@@ -126,6 +143,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: Spacing.lg,
+    gap: Spacing.md,
   },
   list: {
     gap: Spacing.md,
@@ -135,10 +153,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: Spacing.md,
-    backgroundColor: Colors.card,
-    borderRadius: Radius.lg,
-    borderWidth: 0.5,
-    borderColor: Colors.borderCard,
     padding: Spacing.lg,
   },
   rowPast: {
@@ -148,37 +162,9 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: Spacing.xs,
   },
-  rowTitle: {
-    color: Colors.textPrimary,
-  },
-  rowMeta: {
-    fontSize: 12,
-    color: Colors.textSecondary,
-  },
   rowActions: {
     gap: Spacing.sm,
     alignItems: 'flex-end',
-  },
-  actionButton: {
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 6,
-  },
-  editButton: {
-    backgroundColor: Colors.purpleLight,
-  },
-  editText: {
-    color: Colors.purple,
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  deleteButton: {
-    backgroundColor: Colors.dangerLight,
-  },
-  deleteText: {
-    color: Colors.dangerDark,
-    fontSize: 11,
-    fontWeight: '500',
   },
   headerActions: {
     flexDirection: 'row',

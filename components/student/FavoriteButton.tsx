@@ -1,6 +1,4 @@
-import { Pressable, StyleSheet } from 'react-native';
-
-import { Icon } from '@/components/ui/Icon';
+import { IconButton } from '@/components/ui/IconButton';
 import { Colors } from '@/constants/colors';
 
 type FavoriteButtonProps = {
@@ -10,19 +8,13 @@ type FavoriteButtonProps = {
 
 export function FavoriteButton({ isFavorited, onPress }: FavoriteButtonProps) {
   return (
-    <Pressable onPress={onPress} style={styles.button}>
-      <Icon
-        name="heart"
-        size={16}
-        color={isFavorited ? Colors.purple : Colors.purpleMid}
-        fill={isFavorited ? Colors.purple : 'none'}
-      />
-    </Pressable>
+    <IconButton
+      icon="heart"
+      onPress={onPress}
+      size={28}
+      iconSize={16}
+      color={isFavorited ? Colors.purple : Colors.purpleMid}
+      variant="ghost"
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    padding: 4,
-  },
-});

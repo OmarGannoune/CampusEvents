@@ -1,12 +1,16 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useMemo, useState } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/Button';
+import { CategoryChip } from '@/components/ui/CategoryChip';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
+import { TagPill } from '@/components/ui/TagPill';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import type { Event, EventCategory } from '@/types';
-
-import { CategoryChip } from '@/components/ui/CategoryChip';
 
 export type EventFormValues = Omit<Event, 'id' | 'createdAt' | 'registeredCount'>;
 
@@ -131,33 +135,25 @@ export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormPro
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <View style={styles.field}>
-        <Text style={styles.label}>Titre</Text>
-        <TextInput
+      <Field label="Titre" error={errors.title}>
+        <Input
           value={title}
           onChangeText={setTitle}
-          style={styles.input}
           placeholder="Titre de l'événement"
         />
-        {errors.title ? <Text style={styles.error}>{errors.title}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Description</Text>
-        <TextInput
+      <Field label="Description" error={errors.description}>
+        <Input
           value={description}
           onChangeText={setDescription}
-          style={[styles.input, styles.textArea]}
           multiline
           numberOfLines={4}
-          textAlignVertical="top"
           placeholder="Description de l'événement"
         />
-        {errors.description ? <Text style={styles.error}>{errors.description}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Catégorie</Text>
+      <Field label="Catégorie" error={errors.category}>
         <View style={styles.categoryRow}>
           {CATEGORY_OPTIONS.map((item) => {
             const selected = category === item;
@@ -171,84 +167,65 @@ export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormPro
             );
           })}
         </View>
-        {errors.category ? <Text style={styles.error}>{errors.category}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Date de début</Text>
-        <Pressable style={styles.input} onPress={() => setPickerField('start')}>
-          <Text style={formattedStart ? styles.inputText : styles.placeholder}>
+      <Field label="Date de début" error={errors.startDateTime}>
+        <Pressable style={styles.inputPressable} onPress={() => setPickerField('start')}>
+          <Text
+            variant="body"
+            color={formattedStart ? Colors.textPrimary : Colors.textHint}>
             {formattedStart || 'Sélectionner une date'}
           </Text>
         </Pressable>
-        {errors.startDateTime ? <Text style={styles.error}>{errors.startDateTime}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Date de fin</Text>
-        <Pressable style={styles.input} onPress={() => setPickerField('end')}>
-          <Text style={formattedEnd ? styles.inputText : styles.placeholder}>
+      <Field label="Date de fin" error={errors.endDateTime}>
+        <Pressable style={styles.inputPressable} onPress={() => setPickerField('end')}>
+          <Text
+            variant="body"
+            color={formattedEnd ? Colors.textPrimary : Colors.textHint}>
             {formattedEnd || 'Sélectionner une date (optionnel)'}
           </Text>
         </Pressable>
-        {errors.endDateTime ? <Text style={styles.error}>{errors.endDateTime}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Lieu</Text>
-        <TextInput value={locationName} onChangeText={setLocationName} style={styles.input} />
-        {errors.locationName ? <Text style={styles.error}>{errors.locationName}</Text> : null}
-      </View>
+      <Field label="Lieu" error={errors.locationName}>
+        <Input value={locationName} onChangeText={setLocationName} />
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Adresse</Text>
-        <TextInput
-          value={locationAddress}
-          onChangeText={setLocationAddress}
-          style={styles.input}
-        />
-      </View>
+      <Field label="Adresse">
+        <Input value={locationAddress} onChangeText={setLocationAddress} />
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Organisateur</Text>
-        <TextInput value={organizerName} onChangeText={setOrganizerName} style={styles.input} />
-      </View>
+      <Field label="Organisateur">
+        <Input value={organizerName} onChangeText={setOrganizerName} />
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Capacité</Text>
-        <TextInput
+      <Field label="Capacité" error={errors.capacity}>
+        <Input
           value={capacity}
           onChangeText={setCapacity}
-          style={styles.input}
           keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
         />
-        {errors.capacity ? <Text style={styles.error}>{errors.capacity}</Text> : null}
-      </View>
+      </Field>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Tags</Text>
-        <TextInput
+      <Field label="Tags" error={errors.tags}>
+        <Input
           value={tagInput}
           onChangeText={setTagInput}
-          style={styles.input}
           placeholder="Entrer un tag puis virgule"
           onSubmitEditing={handleTagSubmit}
         />
         <View style={styles.tagsRow}>
           {tags.map((tag) => (
             <Pressable key={tag} onPress={() => setTags(tags.filter((item) => item !== tag))}>
-              <View style={styles.tagPill}>
-                <Text style={styles.tagText}>{tag}</Text>
-              </View>
+              <TagPill label={tag} />
             </Pressable>
           ))}
         </View>
-        {errors.tags ? <Text style={styles.error}>{errors.tags}</Text> : null}
-      </View>
+      </Field>
 
-      <Pressable style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>{submitLabel}</Text>
-      </Pressable>
+      <Button label={submitLabel} onPress={handleSubmit} />
 
       {pickerField ? (
         <DateTimePicker
@@ -279,35 +256,6 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     gap: Spacing.md,
   },
-  field: {
-    gap: Spacing.xs,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.textPrimary,
-  },
-  input: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: 14,
-    color: Colors.textPrimary,
-  },
-  inputText: {
-    color: Colors.textPrimary,
-    fontSize: 14,
-  },
-  placeholder: {
-    color: Colors.textHint,
-    fontSize: 14,
-  },
-  textArea: {
-    minHeight: 90,
-  },
   categoryRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -320,38 +268,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderStrong,
   },
+  inputPressable: {
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
+    borderRadius: Radius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.sm,
     marginTop: Spacing.sm,
-  },
-  tagPill: {
-    backgroundColor: Colors.purpleLight,
-    borderRadius: Radius.full,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-  },
-  tagText: {
-    fontSize: 11,
-    color: Colors.purple,
-  },
-  error: {
-    fontSize: 11,
-    color: Colors.danger,
-  },
-  submitButton: {
-    marginTop: Spacing.lg,
-    backgroundColor: Colors.purple,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  submitText: {
-    color: Colors.textOnDark,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
   },
 });

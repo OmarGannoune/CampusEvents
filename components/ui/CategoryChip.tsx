@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius } from '@/constants/spacing';
+import { Radius, Spacing } from '@/constants/spacing';
 import type { EventCategory } from '@/types';
 
 type ChipSize = 'sm' | 'md';
@@ -35,11 +36,8 @@ export function CategoryChip({ category, size = 'md' }: CategoryChipProps) {
         { backgroundColor: colors.bg },
       ]}>
       <Text
-        style={[
-          styles.text,
-          size === 'sm' ? styles.textSmall : styles.textMedium,
-          { color: colors.text },
-        ]}>
+        variant={size === 'sm' ? 'tiny' : 'caption'}
+        color={colors.text}>
         {category}
       </Text>
     </View>
@@ -52,20 +50,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   small: {
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
   },
   medium: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-  },
-  text: {
-    fontWeight: '500',
-  },
-  textSmall: {
-    fontSize: 10,
-  },
-  textMedium: {
-    fontSize: 12,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
   },
 });

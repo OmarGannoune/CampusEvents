@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/components/ui/Icon';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 
@@ -9,7 +10,7 @@ export function AIWarningBanner() {
     <View style={styles.banner}>
       <View style={styles.row}>
         <Icon name="alert-triangle" size={14} color={Colors.amberDark} />
-        <Text style={styles.text}>
+        <Text variant="caption" color={Colors.amberDark} style={styles.text}>
           Ne soumettez pas de données personnelles ou sensibles à cet assistant.
         </Text>
       </View>
@@ -29,8 +30,6 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   text: {
-    color: Colors.amberDark,
-    fontSize: 12,
     flex: 1,
   },
 });

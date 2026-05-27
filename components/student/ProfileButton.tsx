@@ -1,8 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
-
-import { Icon } from '@/components/ui/Icon';
+import { IconButton } from '@/components/ui/IconButton';
 import { Colors } from '@/constants/colors';
-import { Radius } from '@/constants/spacing';
 
 type ProfileButtonProps = {
   onPress: () => void;
@@ -10,20 +7,12 @@ type ProfileButtonProps = {
 
 export function ProfileButton({ onPress }: ProfileButtonProps) {
   return (
-    <Pressable style={styles.button} onPress={onPress} accessibilityRole="button">
-      <Icon name="user-circle" size={18} color={Colors.textOnDark} />
-    </Pressable>
+    <IconButton
+      icon="user-circle"
+      onPress={onPress}
+      size={32}
+      iconSize={18}
+      color={Colors.textOnDark}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    width: 28,
-    height: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Colors.borderStrong,
-  },
-});

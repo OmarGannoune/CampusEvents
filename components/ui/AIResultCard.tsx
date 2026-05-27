@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Card } from '@/components/ui/Card';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
-import { Typography } from '@/constants/typography';
 
 type AIResultCardProps = {
   title: string;
@@ -23,24 +24,33 @@ export function AIResultCard({
     <Pressable
       disabled={!onPress}
       onPress={onPress}
-      style={[styles.card, { borderLeftColor: accentColor }]}
+      style={styles.pressable}
       accessibilityRole={onPress ? 'button' : 'summary'}>
-      <View style={styles.headerRow}>
-        <Text style={[Typography.sectionTitle, styles.title]}>{title}</Text>
-        {badgeLabel ? <Text style={styles.badge}>{badgeLabel}</Text> : null}
-      </View>
-      <Text style={styles.description}>{description}</Text>
+      <Card style={[styles.card, { borderLeftColor: accentColor }]}>
+        <View style={styles.headerRow}>
+          <Text variant="sectionTitle" color={Colors.textPrimary} style={styles.title}>
+            {title}
+          </Text>
+          {badgeLabel ? (
+            <Text variant="tiny" color={Colors.textSecondary} style={styles.badge}>
+              {badgeLabel}
+            </Text>
+          ) : null}
+        </View>
+        <Text variant="caption" color={Colors.textSecondary} style={styles.description}>
+          {description}
+        </Text>
+      </Card>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: Colors.card,
-    borderWidth: 0.5,
-    borderColor: Colors.borderCard,
-    borderLeftWidth: 2,
+  pressable: {
     borderRadius: Radius.lg,
+  },
+  card: {
+    borderLeftWidth: 2,
     padding: Spacing.lg,
   },
   headerRow: {
@@ -50,12 +60,9 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   title: {
-    color: Colors.textPrimary,
     flex: 1,
   },
   badge: {
-    fontSize: 10,
-    color: Colors.textSecondary,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
     borderRadius: Radius.full,
@@ -64,7 +71,5 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: Spacing.sm,
-    fontSize: 12,
-    color: Colors.textSecondary,
   },
 });

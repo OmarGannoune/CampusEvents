@@ -1,9 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
+import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
-import { Typography } from '@/constants/typography';
 import type { Event } from '@/types';
 
 import { Badge } from './Badge';
@@ -66,33 +67,36 @@ export function EventCard({ event, isFavorited, onPress, onToggleFavorite }: Eve
   })();
 
   return (
-    <Pressable style={styles.card} onPress={onPress} accessibilityRole="button">
-      <View style={styles.topRow}>
-        <CategoryChip category={event.category} size="sm" />
-        <Pressable onPress={onToggleFavorite} accessibilityRole="button">
-          <Icon
-            name="heart"
-            size={16}
-            color={isFavorited ? Colors.purple : Colors.purpleMid}
-            fill={isFavorited ? Colors.purple : 'none'}
-          />
-        </Pressable>
-      </View>
-      <Text style={[Typography.sectionTitle, styles.title]}>{event.title}</Text>
-      <Text style={styles.meta}>
-        {formatDateRange(event)} · {event.locationName}
-      </Text>
-      {badge ? <View style={styles.badge}>{badge}</View> : null}
+    <Pressable style={styles.pressable} onPress={onPress} accessibilityRole="button">
+      <Card style={styles.card}>
+        <View style={styles.topRow}>
+          <CategoryChip category={event.category} size="sm" />
+          <Pressable onPress={onToggleFavorite} accessibilityRole="button">
+            <Icon
+              name="heart"
+              size={16}
+              color={isFavorited ? Colors.purple : Colors.purpleMid}
+              fill={isFavorited ? Colors.purple : 'none'}
+            />
+          </Pressable>
+        </View>
+        <Text variant="sectionTitle" color={Colors.textPrimary}>
+          {event.title}
+        </Text>
+        <Text variant="caption" color={Colors.textSecondary}>
+          {formatDateRange(event)} · {event.locationName}
+        </Text>
+        {badge ? <View style={styles.badge}>{badge}</View> : null}
+      </Card>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: Colors.card,
-    borderWidth: 0.5,
-    borderColor: Colors.borderCard,
+  pressable: {
     borderRadius: Radius.lg,
+  },
+  card: {
     padding: Spacing.lg,
     gap: Spacing.sm,
   },
@@ -100,13 +104,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  title: {
-    color: Colors.textPrimary,
-  },
-  meta: {
-    fontSize: 12,
-    color: Colors.textSecondary,
   },
   badge: {
     marginTop: Spacing.sm,

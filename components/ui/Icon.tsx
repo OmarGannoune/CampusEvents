@@ -67,7 +67,14 @@ export function Icon({
   style,
 }: IconProps) {
   const LucideIcon = ICONS[name];
+  const scaledSize = Math.round(size * 1.15);
   return (
-    <LucideIcon size={size} color={color} strokeWidth={strokeWidth} fill={fill} style={style} />
+    <LucideIcon
+      size={scaledSize}
+      color={color}
+      strokeWidth={strokeWidth}
+      fill={fill}
+      style={style}
+    />
   );
 }

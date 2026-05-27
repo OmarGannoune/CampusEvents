@@ -1,8 +1,9 @@
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { IconName } from '@/components/ui/Icon';
 import { Icon } from '@/components/ui/Icon';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 
@@ -29,7 +30,9 @@ export function BottomTabBar({ state, navigation }: BottomTabBarProps) {
             onPress={() => navigation.navigate(route.name)}
             style={styles.tab}>
             <Icon name={config.icon} size={18} color={color} />
-            <Text style={[styles.label, { color }]}>{config.label}</Text>
+            <Text variant="tiny" color={color} style={styles.label}>
+              {config.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -54,7 +57,6 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   label: {
-    fontSize: 10,
     fontWeight: '500',
   },
 });

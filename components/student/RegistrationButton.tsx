@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/Button';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
+import { Spacing } from '@/constants/spacing';
 
 type RegistrationStatus = 'default' | 'registered' | 'full' | 'past';
 
@@ -33,37 +35,36 @@ export function RegistrationButton({ status, onRegister, onCancel }: Registratio
 
   return (
     <View>
-      <Pressable
-        disabled={isDisabled}
+      <Button
+        label={label}
         onPress={handlePress}
-        style={[
-          styles.button,
-          status === 'registered' && styles.buttonGhost,
-          isDisabled && styles.buttonDisabled,
-        ]}>
-        <Text
-          style={[
-            styles.buttonText,
-            status === 'registered' && styles.buttonTextDanger,
-            isDisabled && styles.buttonTextDisabled,
-          ]}>
-          {label}
-        </Text>
-      </Pressable>
+        disabled={isDisabled}
+        uppercase={false}
+        variant={status === 'registered' ? 'danger-ghost' : 'primary'}
+      />
       {confirming ? (
         <View style={styles.confirmRow}>
-          <Text style={styles.confirmText}>Confirmer l'annulation ?</Text>
+          <Text variant="caption" color={Colors.textSecondary}>
+            Confirmer l'annulation ?
+          </Text>
           <View style={styles.confirmActions}>
-            <Pressable
+            <Button
+              label="Oui"
+              size="sm"
+              variant="danger-ghost"
+              uppercase={false}
               onPress={() => {
                 setConfirming(false);
                 onCancel();
-              }}>
-              <Text style={styles.confirmActionText}>Oui</Text>
-            </Pressable>
-            <Pressable onPress={() => setConfirming(false)}>
-              <Text style={styles.confirmActionText}>Non</Text>
-            </Pressable>
+              }}
+            />
+            <Button
+              label="Non"
+              size="sm"
+              variant="ghost"
+              uppercase={false}
+              onPress={() => setConfirming(false)}
+            />
           </View>
         </View>
       ) : null}
@@ -72,48 +73,15 @@ export function RegistrationButton({ status, onRegister, onCancel }: Registratio
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: Colors.purple,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  buttonGhost: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.danger,
-  },
-  buttonDisabled: {
-    backgroundColor: Colors.borderDefault,
-  },
-  buttonText: {
-    color: Colors.textOnDark,
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  buttonTextDanger: {
-    color: Colors.danger,
-  },
-  buttonTextDisabled: {
-    color: Colors.textSecondary,
-  },
   confirmRow: {
     marginTop: Spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  confirmText: {
-    fontSize: 12,
-    color: Colors.textSecondary,
+    gap: Spacing.sm,
   },
   confirmActions: {
     flexDirection: 'row',
     gap: Spacing.sm,
-  },
-  confirmActionText: {
-    color: Colors.danger,
-    fontSize: 12,
-    fontWeight: '500',
   },
 });

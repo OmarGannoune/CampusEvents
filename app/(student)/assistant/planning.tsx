@@ -1,11 +1,13 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ProfileButton } from '@/components/student/ProfileButton';
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
+import { Input } from '@/components/ui/Input';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
+import { Spacing } from '@/constants/spacing';
 
 export default function AssistantPlanningScreen() {
   const router = useRouter();
@@ -20,13 +22,14 @@ export default function AssistantPlanningScreen() {
       />
       <View style={styles.content}>
         <AIWarningBanner />
-        <TextInput
-          style={styles.input}
+        <Input
           placeholder="Ex: J'ai cours lundi et mercredi matin, un exam jeudi…"
-          placeholderTextColor={Colors.textHint}
           multiline
+          containerStyle={styles.textArea}
         />
-        <Text style={styles.helper}>Intégration LLM en cours.</Text>
+        <Text variant="caption" color={Colors.textSecondary}>
+          Intégration LLM en cours.
+        </Text>
       </View>
     </View>
   );
@@ -41,18 +44,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     gap: Spacing.md,
   },
-  input: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.borderStrong,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+  textArea: {
     minHeight: 100,
-    color: Colors.textPrimary,
-  },
-  helper: {
-    fontSize: 12,
-    color: Colors.textSecondary,
   },
 });

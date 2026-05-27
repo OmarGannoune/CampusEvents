@@ -12,6 +12,13 @@ export function getRegistrationsForUser(userId: string): Registration[] {
   );
 }
 
+export function getRegistrationsForEvent(eventId: string): Registration[] {
+  return db.getAllSync<RegistrationRow>(
+    'SELECT * FROM registrations WHERE eventId = ? ORDER BY createdAt DESC',
+    eventId
+  );
+}
+
 export function getRegisteredEventIds(userId: string): string[] {
   const rows = db.getAllSync<{ eventId: string }>(
     'SELECT eventId FROM registrations WHERE userId = ? AND status = ? ORDER BY createdAt DESC',

@@ -1,15 +1,17 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { FavoriteButton } from '@/components/student/FavoriteButton';
 import { RegistrationButton } from '@/components/student/RegistrationButton';
 import { CategoryChip } from '@/components/ui/CategoryChip';
+import { Divider } from '@/components/ui/Divider';
 import { Icon } from '@/components/ui/Icon';
+import { TagPill } from '@/components/ui/TagPill';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
-import { Typography } from '@/constants/typography';
+import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 import { getEventById } from '@/database/events';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -107,37 +109,43 @@ export default function EventDetailScreen() {
       </LinearGradient>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={[Typography.sectionTitle, styles.title]}>{event.title}</Text>
+        <Text variant="sectionTitle" color={Colors.textPrimary}>
+          {event.title}
+        </Text>
         <View style={styles.metaRow}>
           <Icon name="calendar" size={16} color={Colors.textSecondary} />
-          <Text style={styles.metaText}>{formattedDate}</Text>
+          <Text variant="caption" color={Colors.textSecondary}>
+            {formattedDate}
+          </Text>
         </View>
         <View style={styles.metaRow}>
           <Icon name="map-pin" size={16} color={Colors.textSecondary} />
-          <Text style={styles.metaText}>
+          <Text variant="caption" color={Colors.textSecondary}>
             {event.locationName}
             {event.locationAddress ? ` · ${event.locationAddress}` : ''}
           </Text>
         </View>
         <View style={styles.metaRow}>
           <Icon name="user" size={16} color={Colors.textSecondary} />
-          <Text style={styles.metaText}>{event.organizerName}</Text>
+          <Text variant="caption" color={Colors.textSecondary}>
+            {event.organizerName}
+          </Text>
         </View>
         <View style={styles.metaRow}>
           <Icon name="users" size={16} color={Colors.textSecondary} />
-          <Text style={styles.metaText}>
+          <Text variant="caption" color={Colors.textSecondary}>
             {event.capacity
               ? `${event.registeredCount} / ${event.capacity} inscrits`
               : 'Illimité'}
           </Text>
         </View>
-        <View style={styles.divider} />
-        <Text style={styles.description}>{event.description}</Text>
+        <Divider />
+        <Text variant="body" color={Colors.textPrimary} style={styles.description}>
+          {event.description}
+        </Text>
         <View style={styles.tagsRow}>
           {event.tags.map((tag) => (
-            <View key={tag} style={styles.tagPill}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
+            <TagPill key={tag} label={tag} />
           ))}
         </View>
       </ScrollView>
@@ -183,41 +191,18 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
     gap: Spacing.md,
   },
-  title: {
-    color: Colors.textPrimary,
-  },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
   },
-  metaText: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: Colors.borderDefault,
-  },
   description: {
-    color: Colors.textPrimary,
-    fontSize: 14,
     lineHeight: 22,
   },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.sm,
-  },
-  tagPill: {
-    backgroundColor: Colors.purpleLight,
-    borderRadius: Radius.full,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-  },
-  tagText: {
-    fontSize: 11,
-    color: Colors.purple,
   },
   bottomBar: {
     position: 'absolute',

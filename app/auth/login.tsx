@@ -1,10 +1,14 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/Button';
+import { Field } from '@/components/ui/Field';
+import { Input } from '@/components/ui/Input';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Radius, Spacing } from '@/constants/spacing';
+import { Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginScreen() {
@@ -28,29 +32,23 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <ScreenHeader title="Connexion" logo subtitle="Accès CampusEvents" />
       <View style={styles.form}>
-        <View style={styles.field}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
+        <Field label="Email">
+          <Input
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            style={styles.input}
           />
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.label}>Mot de passe</Text>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-          />
-        </View>
-        <Pressable style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Se connecter</Text>
-        </Pressable>
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        </Field>
+        <Field label="Mot de passe">
+          <Input value={password} onChangeText={setPassword} secureTextEntry />
+        </Field>
+        <Button label="Se connecter" onPress={handleSubmit} />
+        {error ? (
+          <Text variant="caption" color={Colors.danger}>
+            {error}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
@@ -64,41 +62,5 @@ const styles = StyleSheet.create({
   form: {
     padding: Spacing.lg,
     gap: Spacing.md,
-  },
-  field: {
-    gap: Spacing.xs,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.textPrimary,
-  },
-  input: {
-    backgroundColor: Colors.card,
-    borderWidth: 1,
-    borderColor: Colors.borderDefault,
-    borderRadius: Radius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    fontSize: 14,
-    color: Colors.textPrimary,
-  },
-  button: {
-    marginTop: Spacing.sm,
-    backgroundColor: Colors.purple,
-    borderRadius: Radius.md,
-    paddingVertical: Spacing.sm,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: Colors.textOnDark,
-    fontSize: 11,
-    fontWeight: '500',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
-  error: {
-    color: Colors.danger,
-    fontSize: 12,
   },
 });
