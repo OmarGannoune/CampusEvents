@@ -16,6 +16,7 @@ import {
     Ticket,
     Trash2,
     User,
+    UserCircle,
     Users,
     WifiOff,
 } from 'lucide-react-native';
@@ -41,6 +42,7 @@ const ICONS = {
   ticket: Ticket,
   trash: Trash2,
   user: User,
+  'user-circle': UserCircle,
   users: Users,
   'wifi-off': WifiOff,
 } as const;

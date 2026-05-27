@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { FilterChips } from '@/components/student/FilterChips';
+import { ProfileButton } from '@/components/student/ProfileButton';
 import { SearchBar } from '@/components/student/SearchBar';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -73,7 +74,12 @@ export default function EventsCatalogueScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="CampusEvents" logo subtitle={subtitle} />
+      <ScreenHeader
+        title="CampusEvents"
+        logo
+        subtitle={subtitle}
+        rightElement={<ProfileButton onPress={() => router.push('/(student)/profile')} />}
+      />
       <View style={styles.content}>
         <SearchBar value={query} onChangeText={setQuery} />
         <View style={styles.filterRow}>

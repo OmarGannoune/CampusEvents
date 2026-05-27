@@ -42,6 +42,13 @@ export interface LLMResult {
   createdAt: string;
 }
 
+export interface StudentProfile {
+  displayName: string;
+  filiere: string;
+  annee: string;
+  interests: string[];
+}
+
 export interface EventSummary {
   id: string;
   title: string;

@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { ProfileButton } from '@/components/student/ProfileButton';
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { Colors } from '@/constants/colors';
@@ -15,6 +16,7 @@ export default function AssistantSearchScreen() {
         showBack
         onBack={() => router.back()}
         accentColor={Colors.aiSearch}
+        rightElement={<ProfileButton onPress={() => router.push('/(student)/profile')} />}
       />
       <View style={styles.content}>
         <AIWarningBanner />

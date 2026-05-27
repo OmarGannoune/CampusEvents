@@ -8,7 +8,7 @@ import {
     type UserHistory,
 } from '@/prompts/recommendations';
 import { SYSTEM_PROMPT as SEARCH_PROMPT, buildSearchMessage } from '@/prompts/search';
-import type { Event, EventSummary } from '@/types';
+import type { Event, EventSummary, StudentProfile } from '@/types';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
@@ -104,14 +104,18 @@ export const llmService = {
     const message = buildSearchMessage(query, summaries);
     return callLLM(SEARCH_PROMPT, message);
   },
-  recommend: async (history: UserHistory, upcomingEvents: Event[]) => {
+  recommend: async (
+    history: UserHistory,
+    upcomingEvents: Event[],
+    profile?: StudentProfile | null
+  ) => {
     const summaries = limitEventSummaries(upcomingEvents);
-    const message = buildRecommendationMessage(history, summaries);
+    const message = buildRecommendationMessage(history, summaries, profile);
     return callLLM(RECO_PROMPT, message);
   },
-  plan: async (constraints: string, weekEvents: Event[]) => {
+  plan: async (constraints: string, weekEvents: Event[], profile?: StudentProfile | null) => {
     const summaries = limitEventSummaries(weekEvents);
-    const message = buildPlanningMessage(constraints, summaries);
+    const message = buildPlanningMessage(constraints, summaries, profile);
     return callLLM(PLAN_PROMPT, message);
   },
   answerQuestion: async (question: string, allEvents: Event[]) => {

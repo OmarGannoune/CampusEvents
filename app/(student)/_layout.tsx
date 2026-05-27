@@ -9,6 +9,7 @@ export default function StudentLayout() {
       <Tabs.Screen name="favorites" />
       <Tabs.Screen name="registrations" />
       <Tabs.Screen name="assistant" />
+      <Tabs.Screen name="profile" options={{ href: null }} />
     </Tabs>
   );
 }

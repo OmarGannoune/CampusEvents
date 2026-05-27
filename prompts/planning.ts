@@ -1,4 +1,4 @@
-import type { EventSummary } from '@/types';
+import type { EventSummary, StudentProfile } from '@/types';
 
 export const SYSTEM_PROMPT = `
 You are a university scheduling assistant.
@@ -25,8 +25,34 @@ Rules:
 - No text outside the JSON object.
 `;
 
-export function buildPlanningMessage(constraints: string, weekEvents: EventSummary[]): string {
+function formatProfile(profile?: StudentProfile | null): string | null {
+  if (!profile) {
+    return null;
+  }
+  const parts: string[] = [];
+  if (profile.filiere.trim()) {
+    parts.push(`Filiere: ${profile.filiere.trim()}`);
+  }
+  if (profile.annee.trim()) {
+    parts.push(`Annee: ${profile.annee.trim()}`);
+  }
+  if (profile.interests.length > 0) {
+    parts.push(`Interests: ${profile.interests.join(', ')}`);
+  }
+  if (parts.length === 0) {
+    return null;
+  }
+  return `Student profile: ${parts.join(', ')}`;
+}
+
+export function buildPlanningMessage(
+  constraints: string,
+  weekEvents: EventSummary[],
+  profile?: StudentProfile | null
+): string {
+  const profileBlock = formatProfile(profile);
   return `
+${profileBlock ? `${profileBlock}\n\n` : ''}
 Student constraints: "${constraints}"
 
 Events this week:

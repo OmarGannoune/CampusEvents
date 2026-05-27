@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { ProfileButton } from '@/components/student/ProfileButton';
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
 import type { IconName } from '@/components/ui/Icon';
 import { Icon } from '@/components/ui/Icon';
@@ -77,7 +78,11 @@ export default function AssistantHubScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="✦ Assistant IA" subtitle="Propulsé par Claude · Ne soumettez pas de données sensibles." />
+      <ScreenHeader
+        title="✦ Assistant IA"
+        subtitle="Propulsé par Claude · Ne soumettez pas de données sensibles."
+        rightElement={<ProfileButton onPress={() => router.push('/(student)/profile')} />}
+      />
       <View style={styles.content}>
         <AIWarningBanner />
 

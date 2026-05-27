@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet, View } from 'react-native';
 
+import { ProfileButton } from '@/components/student/ProfileButton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { EventCard } from '@/components/ui/EventCard';
@@ -29,7 +30,11 @@ export default function FavoritesScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Mes favoris" subtitle={`${favoriteEvents.length} favoris`} />
+      <ScreenHeader
+        title="Mes favoris"
+        subtitle={`${favoriteEvents.length} favoris`}
+        rightElement={<ProfileButton onPress={() => router.push('/(student)/profile')} />}
+      />
       <View style={styles.content}>
         {isLoading ? (
           <View style={styles.skeletonList}>

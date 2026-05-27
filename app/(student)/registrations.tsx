@@ -1,5 +1,7 @@
+import { useRouter } from 'expo-router';
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 
+import { ProfileButton } from '@/components/student/ProfileButton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { Colors } from '@/constants/colors';
@@ -10,6 +12,7 @@ import { useRegistrations } from '@/hooks/useRegistrations';
 import type { Event, Registration } from '@/types';
 
 export default function RegistrationsScreen() {
+  const router = useRouter();
   const { user } = useAuth();
   const { registrations, cancelEventRegistration } = useRegistrations(user?.email ?? '');
 
@@ -32,7 +35,11 @@ export default function RegistrationsScreen() {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Mes inscriptions" subtitle={`${rows.length} inscriptions`} />
+      <ScreenHeader
+        title="Mes inscriptions"
+        subtitle={`${rows.length} inscriptions`}
+        rightElement={<ProfileButton onPress={() => router.push('/(student)/profile')} />}
+      />
       <View style={styles.content}>
         {rows.length === 0 ? (
           <EmptyState
