@@ -36,7 +36,7 @@ export default function RegistrationsScreen() {
       <View style={styles.content}>
         {rows.length === 0 ? (
           <EmptyState
-            icon="ti-ticket"
+            icon="ticket"
             title="Aucune inscription. Découvrez les événements !"
           />
         ) : (

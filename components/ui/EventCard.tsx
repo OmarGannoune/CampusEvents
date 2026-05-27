@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
@@ -69,9 +70,12 @@ export function EventCard({ event, isFavorited, onPress, onToggleFavorite }: Eve
       <View style={styles.topRow}>
         <CategoryChip category={event.category} size="sm" />
         <Pressable onPress={onToggleFavorite} accessibilityRole="button">
-          <Text style={[styles.heart, isFavorited ? styles.heartActive : styles.heartInactive]}>
-            {isFavorited ? '<3' : 'fav'}
-          </Text>
+          <Icon
+            name="heart"
+            size={16}
+            color={isFavorited ? Colors.purple : Colors.purpleMid}
+            fill={isFavorited ? Colors.purple : 'none'}
+          />
         </Pressable>
       </View>
       <Text style={[Typography.sectionTitle, styles.title]}>{event.title}</Text>
@@ -106,15 +110,5 @@ const styles = StyleSheet.create({
   },
   badge: {
     marginTop: Spacing.sm,
-  },
-  heart: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  heartActive: {
-    color: Colors.purple,
-  },
-  heartInactive: {
-    color: Colors.purpleMid,
   },
 });

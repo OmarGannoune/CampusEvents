@@ -6,6 +6,7 @@ import { DeleteConfirmModal } from '@/components/admin/DeleteConfirmModal';
 import { CategoryChip } from '@/components/ui/CategoryChip';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
+import { Icon } from '@/components/ui/Icon';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { SkeletonCard } from '@/components/ui/SkeletonCard';
 import { Colors } from '@/constants/colors';
@@ -74,14 +75,14 @@ export default function AdminEventListScreen() {
         rightElement={
           <View style={styles.headerActions}>
             <Pressable onPress={() => router.push('/(admin)/create')}>
-              <Text style={styles.addIcon}>+</Text>
+              <Icon name="plus" size={18} color={Colors.textOnDark} />
             </Pressable>
             <Pressable
               onPress={async () => {
                 await logout();
                 router.replace('/auth/login');
               }}>
-              <Text style={styles.logoutIcon}>logout</Text>
+              <Icon name="logout" size={16} color={Colors.textOnDarkMuted} />
             </Pressable>
           </View>
         }
@@ -96,7 +97,7 @@ export default function AdminEventListScreen() {
         ) : error ? (
           <ErrorState message={error} onRetry={refresh} />
         ) : events.length === 0 ? (
-          <EmptyState icon="ti-calendar" title="Aucun événement. Créez-en un." />
+          <EmptyState icon="calendar" title="Aucun événement. Créez-en un." />
         ) : (
           <FlatList
             data={events}
@@ -178,15 +179,6 @@ const styles = StyleSheet.create({
     color: Colors.dangerDark,
     fontSize: 11,
     fontWeight: '500',
-  },
-  addIcon: {
-    color: Colors.textOnDark,
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  logoutIcon: {
-    color: Colors.textOnDarkMuted,
-    fontSize: 11,
   },
   headerActions: {
     flexDirection: 'row',

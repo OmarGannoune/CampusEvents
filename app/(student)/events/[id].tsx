@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { FavoriteButton } from '@/components/student/FavoriteButton';
 import { RegistrationButton } from '@/components/student/RegistrationButton';
 import { CategoryChip } from '@/components/ui/CategoryChip';
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
@@ -64,7 +65,7 @@ export default function EventDetailScreen() {
       <View style={styles.container}>
         <LinearGradient colors={[Colors.dark, '#4C1D95']} style={styles.banner}>
           <Pressable onPress={() => router.back()}>
-            <Text style={styles.backText}>{'<'}</Text>
+            <Icon name="arrow-left" size={16} color={Colors.textOnDark} />
           </Pressable>
         </LinearGradient>
       </View>
@@ -93,7 +94,7 @@ export default function EventDetailScreen() {
       <LinearGradient colors={[Colors.dark, '#4C1D95']} style={styles.banner}>
         <View style={styles.bannerTop}>
           <Pressable onPress={() => router.back()}>
-            <Text style={styles.backText}>{'<'}</Text>
+            <Icon name="arrow-left" size={16} color={Colors.textOnDark} />
           </Pressable>
           <FavoriteButton
             isFavorited={favoriteEventIds.includes(event.id)}
@@ -108,22 +109,22 @@ export default function EventDetailScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={[Typography.sectionTitle, styles.title]}>{event.title}</Text>
         <View style={styles.metaRow}>
-          <Text style={styles.metaIcon}>ti-calendar</Text>
+          <Icon name="calendar" size={16} color={Colors.textSecondary} />
           <Text style={styles.metaText}>{formattedDate}</Text>
         </View>
         <View style={styles.metaRow}>
-          <Text style={styles.metaIcon}>ti-map-pin</Text>
+          <Icon name="map-pin" size={16} color={Colors.textSecondary} />
           <Text style={styles.metaText}>
             {event.locationName}
             {event.locationAddress ? ` · ${event.locationAddress}` : ''}
           </Text>
         </View>
         <View style={styles.metaRow}>
-          <Text style={styles.metaIcon}>ti-user</Text>
+          <Icon name="user" size={16} color={Colors.textSecondary} />
           <Text style={styles.metaText}>{event.organizerName}</Text>
         </View>
         <View style={styles.metaRow}>
-          <Text style={styles.metaIcon}>ti-users</Text>
+          <Icon name="users" size={16} color={Colors.textSecondary} />
           <Text style={styles.metaText}>
             {event.capacity
               ? `${event.registeredCount} / ${event.capacity} inscrits`
@@ -177,10 +178,6 @@ const styles = StyleSheet.create({
   bannerBottom: {
     paddingBottom: Spacing.sm,
   },
-  backText: {
-    color: Colors.textOnDark,
-    fontSize: 14,
-  },
   content: {
     padding: Spacing.lg,
     paddingBottom: 120,
@@ -193,10 +190,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-  },
-  metaIcon: {
-    color: Colors.textSecondary,
-    fontSize: 11,
   },
   metaText: {
     color: Colors.textSecondary,

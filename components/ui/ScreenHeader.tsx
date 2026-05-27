@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
@@ -34,7 +35,7 @@ export function ScreenHeader({
         <View style={styles.leftSlot}>
           {showBack ? (
             <Pressable onPress={onBack} style={styles.backButton} accessibilityRole="button">
-              <Text style={styles.backText}>{'<'}</Text>
+              <Icon name="arrow-left" size={14} color={Colors.textOnDark} />
             </Pressable>
           ) : null}
         </View>
@@ -94,10 +95,6 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     borderWidth: 1,
     borderColor: Colors.borderStrong,
-  },
-  backText: {
-    color: Colors.textOnDark,
-    fontSize: 14,
   },
   logoText: {
     color: Colors.textOnDark,

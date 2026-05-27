@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { AIWarningBanner } from '@/components/ui/AIWarningBanner';
+import type { IconName } from '@/components/ui/Icon';
+import { Icon } from '@/components/ui/Icon';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
@@ -15,7 +17,7 @@ type FeatureCard = {
   description: string;
   route: string;
   accent: string;
-  icon: string;
+  icon: IconName;
 };
 
 const FEATURES: FeatureCard[] = [
@@ -24,28 +26,28 @@ const FEATURES: FeatureCard[] = [
     description: 'Trouvez sans connaître les mots-clés',
     route: '/(student)/assistant/search',
     accent: Colors.aiSearch,
-    icon: 'ti-search',
+    icon: 'search',
   },
   {
     title: 'Recommandations',
     description: 'Basé sur vos favoris et inscriptions',
     route: '/(student)/assistant/recommendations',
     accent: Colors.aiReco,
-    icon: 'ti-stars',
+    icon: 'stars',
   },
   {
     title: 'Planification',
     description: 'Planning sans conflit sur mesure',
     route: '/(student)/assistant/planning',
     accent: Colors.aiPlan,
-    icon: 'ti-calendar-time',
+    icon: 'calendar-time',
   },
   {
     title: 'Q/R Catalogue',
     description: "Posez n'importe quelle question",
     route: '/(student)/assistant/qa',
     accent: Colors.aiQA,
-    icon: 'ti-message-question',
+    icon: 'message-question',
   },
 ];
 
@@ -80,7 +82,7 @@ export default function AssistantHubScreen() {
         <AIWarningBanner />
 
         <Pressable style={styles.settingsRow} onPress={() => setShowApiInput(!showApiInput)}>
-          <Text style={styles.settingsIcon}>ti-settings</Text>
+          <Icon name="settings" size={14} color={Colors.textSecondary} />
           <Text style={styles.settingsText}>Clé API</Text>
         </Pressable>
         {showApiInput ? (
@@ -110,7 +112,7 @@ export default function AssistantHubScreen() {
                 { borderTopColor: feature.accent },
                 !hasKey && styles.cardDisabled,
               ]}>
-              <Text style={[styles.cardIcon, { color: feature.accent }]}>{feature.icon}</Text>
+              <Icon name={feature.icon} size={18} color={feature.accent} />
               <Text style={styles.cardTitle}>{feature.title}</Text>
               <Text style={styles.cardDescription}>{feature.description}</Text>
             </Pressable>
@@ -135,10 +137,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-  },
-  settingsIcon: {
-    fontSize: 11,
-    color: Colors.textSecondary,
   },
   settingsText: {
     fontSize: 12,
@@ -180,9 +178,6 @@ const styles = StyleSheet.create({
   },
   cardDisabled: {
     opacity: 0.5,
-  },
-  cardIcon: {
-    fontSize: 12,
   },
   cardTitle: {
     fontSize: 13,

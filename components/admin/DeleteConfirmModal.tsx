@@ -1,5 +1,6 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
@@ -22,7 +23,7 @@ export function DeleteConfirmModal({
       <View style={styles.overlay}>
         <View style={styles.card}>
           <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>trash</Text>
+            <Icon name="trash" size={18} color={Colors.dangerDark} />
           </View>
           <Text style={[Typography.sectionTitle, styles.heading]}>Supprimer l'événement ?</Text>
           <Text style={styles.body}>
@@ -67,10 +68,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dangerLight,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconText: {
-    color: Colors.dangerDark,
-    fontSize: 12,
   },
   heading: {
     color: Colors.textPrimary,

@@ -1,14 +1,16 @@
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import type { IconName } from '@/components/ui/Icon';
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 
-const TAB_CONFIG: Record<string, { label: string; icon: string }> = {
-  events: { label: 'Événements', icon: 'ti-calendar-event' },
-  favorites: { label: 'Favoris', icon: 'ti-heart' },
-  registrations: { label: 'Inscrip.', icon: 'ti-ticket' },
-  assistant: { label: 'Assistant', icon: 'ti-sparkles' },
+const TAB_CONFIG: Record<string, { label: string; icon: IconName }> = {
+  events: { label: 'Événements', icon: 'calendar-event' },
+  favorites: { label: 'Favoris', icon: 'heart' },
+  registrations: { label: 'Inscrip.', icon: 'ticket' },
+  assistant: { label: 'Assistant', icon: 'sparkles' },
 };
 
 export function BottomTabBar({ state, navigation }: BottomTabBarProps) {
@@ -26,7 +28,7 @@ export function BottomTabBar({ state, navigation }: BottomTabBarProps) {
             key={route.key}
             onPress={() => navigation.navigate(route.name)}
             style={styles.tab}>
-            <Text style={[styles.icon, { color }]}>{config.icon}</Text>
+            <Icon name={config.icon} size={18} color={color} />
             <Text style={[styles.label, { color }]}>{config.label}</Text>
           </Pressable>
         );
@@ -50,9 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     gap: 4,
-  },
-  icon: {
-    fontSize: 10,
   },
   label: {
     fontSize: 10,

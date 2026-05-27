@@ -1,8 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { EventForm } from '@/components/admin/EventForm';
+import { Icon } from '@/components/ui/Icon';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { Colors } from '@/constants/colors';
 import { useAuth } from '@/context/AuthContext';
@@ -28,7 +29,7 @@ export default function AdminEditScreen() {
                 await logout();
                 router.replace('/auth/login');
               }}>
-              <Text style={styles.logoutIcon}>logout</Text>
+              <Icon name="logout" size={16} color={Colors.textOnDarkMuted} />
             </Pressable>
           }
         />
@@ -54,7 +55,7 @@ export default function AdminEditScreen() {
               await logout();
               router.replace('/auth/login');
             }}>
-            <Text style={styles.logoutIcon}>logout</Text>
+            <Icon name="logout" size={16} color={Colors.textOnDarkMuted} />
           </Pressable>
         }
       />
@@ -71,9 +72,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.surface,
-  },
-  logoutIcon: {
-    color: Colors.textOnDarkMuted,
-    fontSize: 11,
   },
 });

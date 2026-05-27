@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import type { IconName } from '@/components/ui/Icon';
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
@@ -10,7 +12,7 @@ type EmptyStateAction = {
 };
 
 type EmptyStateProps = {
-  icon: string;
+  icon: IconName;
   title: string;
   subtitle?: string;
   action?: EmptyStateAction;
@@ -20,7 +22,7 @@ export function EmptyState({ icon, title, subtitle, action }: EmptyStateProps) {
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
-        <Text style={styles.iconText}>{icon}</Text>
+        <Icon name={icon} size={20} color={Colors.purple} />
       </View>
       <Text style={[Typography.sectionTitle, styles.title]}>{title}</Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
@@ -47,10 +49,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.purpleLight,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  iconText: {
-    color: Colors.purple,
-    fontSize: 12,
   },
   title: {
     color: Colors.textPrimary,

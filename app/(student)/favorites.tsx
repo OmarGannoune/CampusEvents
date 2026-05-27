@@ -41,7 +41,7 @@ export default function FavoritesScreen() {
           <ErrorState message={error} onRetry={refresh} />
         ) : favoriteEvents.length === 0 ? (
           <EmptyState
-            icon="ti-heart"
+            icon="heart"
             title="Pas encore de favoris. Explorez le catalogue !"
           />
         ) : (

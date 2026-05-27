@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
+import { Icon } from '@/components/ui/Icon';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 
@@ -11,7 +12,7 @@ type SearchBarProps = {
 export function SearchBar({ value, onChangeText }: SearchBarProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>search</Text>
+      <Icon name="search" size={16} color={Colors.textSecondary} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -34,10 +35,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     gap: Spacing.sm,
-  },
-  icon: {
-    fontSize: 11,
-    color: Colors.textSecondary,
   },
   input: {
     flex: 1,

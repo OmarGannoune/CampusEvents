@@ -101,7 +101,7 @@ export default function EventsCatalogueScreen() {
           <ErrorState message={error} onRetry={refresh} />
         ) : filteredEvents.length === 0 ? (
           <EmptyState
-            icon="ti-calendar"
+            icon="calendar"
             title={
               debouncedQuery
                 ? `Aucun résultat pour « ${debouncedQuery} »`
