@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FavoriteButton } from '@/components/student/FavoriteButton';
 import { RegistrationButton } from '@/components/student/RegistrationButton';
@@ -11,7 +12,7 @@ import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { TagPill } from '@/components/ui/TagPill';
 import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
-import { Spacing } from '@/constants/spacing';
+import { Radius, Spacing } from '@/constants/spacing';
 import { useAuth } from '@/context/AuthContext';
 import { getEventById } from '@/database/events';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -23,6 +24,7 @@ export default function EventDetailScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const { user } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
+  const insets = useSafeAreaInsets();
 
   const { favoriteEventIds, toggleFavorite } = useFavorites(user?.email ?? '');
   const { registeredEventIds, registerEvent, cancelEventRegistration } = useRegistrations(
@@ -95,6 +97,8 @@ export default function EventDetailScreen() {
     return `${date} · ${startTime} - ${endTime}`;
   })();
 
+  const bottomBarOffset = Math.max(insets.bottom, Spacing.md) + 70; // 70px to clear the floating tab bar
+
   return (
     <View style={styles.container}>
       <ScreenHeader
@@ -163,7 +167,7 @@ export default function EventDetailScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, { bottom: bottomBarOffset }]}>
         <RegistrationButton
           status={registrationStatus}
           onRegister={() => {
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.lg,
-    paddingBottom: 120,
+    paddingBottom: 220, // Increased to clear both floating action bars
     gap: Spacing.md,
   },
   metaRow: {
@@ -208,12 +212,17 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    left: Spacing.lg,
+    right: Spacing.lg,
     backgroundColor: Colors.card,
-    borderTopWidth: 0.5,
-    borderTopColor: Colors.borderDefault,
-    padding: Spacing.lg,
+    borderRadius: Radius.xl,
+    padding: Spacing.md,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderDefault,
   },
 });
