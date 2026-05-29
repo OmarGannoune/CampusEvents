@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { CategoryChip } from '@/components/ui/CategoryChip';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
@@ -22,23 +23,9 @@ type EventFormProps = {
 
 type FieldErrors = Partial<Record<keyof EventFormValues, string>>;
 
-type PickerField = 'start' | 'end' | null;
+type PickerField = 'startDate' | 'startTime' | 'endDate' | 'endTime' | null;
 
 const CATEGORY_OPTIONS: EventCategory[] = ['Talk', 'Workshop', 'Club', 'Exam', 'Other'];
-
-function formatDateTime(value?: Date | null): string {
-  if (!value) {
-    return '';
-  }
-  const date = value.toLocaleDateString('fr-FR', {
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-  const time = value.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  return `${date} · ${time}`;
-}
 
 export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormProps) {
   const [title, setTitle] = useState(initialValues?.title ?? '');
@@ -64,9 +51,6 @@ export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormPro
   const [tagInput, setTagInput] = useState('');
   const [errors, setErrors] = useState<FieldErrors>({});
   const [pickerField, setPickerField] = useState<PickerField>(null);
-
-  const formattedStart = useMemo(() => formatDateTime(startDateTime), [startDateTime]);
-  const formattedEnd = useMemo(() => formatDateTime(endDateTime), [endDateTime]);
 
   const addTag = (rawTag: string) => {
     const trimmed = rawTag.trim();
@@ -133,118 +117,201 @@ export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormPro
     });
   };
 
+  const togglePicker = (field: PickerField) => {
+    setPickerField(pickerField === field ? null : field);
+  };
+
+  const handleDateChange = (selected: Date | undefined, field: PickerField) => {
+    if (Platform.OS !== 'ios') {
+      setPickerField(null);
+    }
+    if (!selected) return;
+
+    if (field === 'startDate') {
+      const current = startDateTime ?? new Date();
+      selected.setHours(current.getHours(), current.getMinutes());
+      setStartDateTime(selected);
+    } else if (field === 'startTime') {
+      const current = startDateTime ?? new Date();
+      current.setHours(selected.getHours(), selected.getMinutes());
+      setStartDateTime(new Date(current));
+    } else if (field === 'endDate') {
+      const current = endDateTime ?? new Date();
+      selected.setHours(current.getHours(), current.getMinutes());
+      setEndDateTime(selected);
+    } else if (field === 'endTime') {
+      const current = endDateTime ?? new Date();
+      current.setHours(selected.getHours(), selected.getMinutes());
+      setEndDateTime(new Date(current));
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Field label="Titre" error={errors.title}>
-        <Input
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Titre de l'événement"
-        />
-      </Field>
+      <Card style={styles.sectionCard}>
+        <Text variant="sectionTitle" color={Colors.purple} style={styles.sectionHeader}>
+          Informations générales
+        </Text>
+        <Field label="Titre" error={errors.title}>
+          <Input
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Titre de l'événement"
+          />
+        </Field>
 
-      <Field label="Description" error={errors.description}>
-        <Input
-          value={description}
-          onChangeText={setDescription}
-          multiline
-          numberOfLines={4}
-          placeholder="Description de l'événement"
-        />
-      </Field>
+        <Field label="Description" error={errors.description}>
+          <Input
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            numberOfLines={4}
+            placeholder="Description de l'événement"
+          />
+        </Field>
 
-      <Field label="Catégorie" error={errors.category}>
-        <View style={styles.categoryRow}>
-          {CATEGORY_OPTIONS.map((item) => {
-            const selected = category === item;
-            return (
-              <Pressable
-                key={item}
-                onPress={() => setCategory(item)}
-                style={[styles.categoryChip, selected && styles.categoryChipSelected]}>
-                <CategoryChip category={item} size="sm" />
+        <Field label="Catégorie" error={errors.category}>
+          <View style={styles.categoryRow}>
+            {CATEGORY_OPTIONS.map((item) => {
+              const selected = category === item;
+              return (
+                <Pressable
+                  key={item}
+                  onPress={() => setCategory(item)}
+                  style={[styles.categoryChip, selected && styles.categoryChipSelected]}>
+                  <CategoryChip category={item} size="md" />
+                </Pressable>
+              );
+            })}
+          </View>
+        </Field>
+
+        <Field label="Tags" error={errors.tags}>
+          <Input
+            value={tagInput}
+            onChangeText={setTagInput}
+            placeholder="Entrer un tag puis virgule"
+            onSubmitEditing={handleTagSubmit}
+          />
+          <View style={styles.tagsRow}>
+            {tags.map((tag) => (
+              <Pressable key={tag} onPress={() => setTags(tags.filter((item) => item !== tag))}>
+                <TagPill label={tag} />
               </Pressable>
-            );
-          })}
+            ))}
+          </View>
+        </Field>
+      </Card>
+
+      <Card style={styles.sectionCard}>
+        <Text variant="sectionTitle" color={Colors.purple} style={styles.sectionHeader}>
+          Planification
+        </Text>
+        <View style={styles.row}>
+          <View style={styles.flex1}>
+            <Field label="Date de début" error={errors.startDateTime}>
+              <Pressable style={styles.inputPressable} onPress={() => togglePicker('startDate')}>
+                <Text variant="body" color={startDateTime ? Colors.textPrimary : Colors.textHint}>
+                  {startDateTime ? startDateTime.toLocaleDateString('fr-FR') : 'Sélectionner'}
+                </Text>
+              </Pressable>
+            </Field>
+          </View>
+          <View style={styles.flex1}>
+            <Field label="Heure">
+              <Pressable style={styles.inputPressable} onPress={() => togglePicker('startTime')}>
+                <Text variant="body" color={startDateTime ? Colors.textPrimary : Colors.textHint}>
+                  {startDateTime ? startDateTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Sélectionner'}
+                </Text>
+              </Pressable>
+            </Field>
+          </View>
         </View>
-      </Field>
 
-      <Field label="Date de début" error={errors.startDateTime}>
-        <Pressable style={styles.inputPressable} onPress={() => setPickerField('start')}>
-          <Text
-            variant="body"
-            color={formattedStart ? Colors.textPrimary : Colors.textHint}>
-            {formattedStart || 'Sélectionner une date'}
-          </Text>
-        </Pressable>
-      </Field>
+        {Platform.OS === 'ios' && (pickerField === 'startDate' || pickerField === 'startTime') ? (
+          <View style={styles.inlinePicker}>
+            <DateTimePicker
+              value={startDateTime ?? new Date()}
+              mode={pickerField === 'startTime' ? 'time' : 'date'}
+              display="spinner"
+              onChange={(_, selected) => handleDateChange(selected, pickerField)}
+            />
+          </View>
+        ) : null}
 
-      <Field label="Date de fin" error={errors.endDateTime}>
-        <Pressable style={styles.inputPressable} onPress={() => setPickerField('end')}>
-          <Text
-            variant="body"
-            color={formattedEnd ? Colors.textPrimary : Colors.textHint}>
-            {formattedEnd || 'Sélectionner une date (optionnel)'}
-          </Text>
-        </Pressable>
-      </Field>
-
-      <Field label="Lieu" error={errors.locationName}>
-        <Input value={locationName} onChangeText={setLocationName} />
-      </Field>
-
-      <Field label="Adresse">
-        <Input value={locationAddress} onChangeText={setLocationAddress} />
-      </Field>
-
-      <Field label="Organisateur">
-        <Input value={organizerName} onChangeText={setOrganizerName} />
-      </Field>
-
-      <Field label="Capacité" error={errors.capacity}>
-        <Input
-          value={capacity}
-          onChangeText={setCapacity}
-          keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-        />
-      </Field>
-
-      <Field label="Tags" error={errors.tags}>
-        <Input
-          value={tagInput}
-          onChangeText={setTagInput}
-          placeholder="Entrer un tag puis virgule"
-          onSubmitEditing={handleTagSubmit}
-        />
-        <View style={styles.tagsRow}>
-          {tags.map((tag) => (
-            <Pressable key={tag} onPress={() => setTags(tags.filter((item) => item !== tag))}>
-              <TagPill label={tag} />
-            </Pressable>
-          ))}
+        <View style={styles.row}>
+          <View style={styles.flex1}>
+            <Field label="Date de fin" error={errors.endDateTime}>
+              <Pressable style={styles.inputPressable} onPress={() => togglePicker('endDate')}>
+                <Text variant="body" color={endDateTime ? Colors.textPrimary : Colors.textHint}>
+                  {endDateTime ? endDateTime.toLocaleDateString('fr-FR') : 'Optionnel'}
+                </Text>
+              </Pressable>
+            </Field>
+          </View>
+          <View style={styles.flex1}>
+            <Field label="Heure">
+              <Pressable style={styles.inputPressable} onPress={() => togglePicker('endTime')}>
+                <Text variant="body" color={endDateTime ? Colors.textPrimary : Colors.textHint}>
+                  {endDateTime ? endDateTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Optionnel'}
+                </Text>
+              </Pressable>
+            </Field>
+          </View>
         </View>
-      </Field>
 
-      <Button label={submitLabel} onPress={handleSubmit} />
+        {Platform.OS === 'ios' && (pickerField === 'endDate' || pickerField === 'endTime') ? (
+          <View style={styles.inlinePicker}>
+            <DateTimePicker
+              value={endDateTime ?? new Date()}
+              mode={pickerField === 'endTime' ? 'time' : 'date'}
+              display="spinner"
+              onChange={(_, selected) => handleDateChange(selected, pickerField)}
+            />
+          </View>
+        ) : null}
+      </Card>
 
-      {pickerField ? (
+      <Card style={styles.sectionCard}>
+        <Text variant="sectionTitle" color={Colors.purple} style={styles.sectionHeader}>
+          Lieu & Organisation
+        </Text>
+        <Field label="Lieu" error={errors.locationName}>
+          <Input value={locationName} onChangeText={setLocationName} />
+        </Field>
+
+        <Field label="Adresse">
+          <Input value={locationAddress} onChangeText={setLocationAddress} />
+        </Field>
+
+        <Field label="Organisateur">
+          <Input value={organizerName} onChangeText={setOrganizerName} />
+        </Field>
+
+        <Field label="Capacité" error={errors.capacity}>
+          <Input
+            value={capacity}
+            onChangeText={setCapacity}
+            keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
+            placeholder="Ex: 50"
+          />
+        </Field>
+      </Card>
+
+      <View style={styles.submitContainer}>
+        <Button label={submitLabel} onPress={handleSubmit} size="lg" />
+      </View>
+
+      {Platform.OS !== 'ios' && pickerField ? (
         <DateTimePicker
-          value={pickerField === 'start' ? startDateTime ?? new Date() : endDateTime ?? new Date()}
-          mode="datetime"
+          value={
+            pickerField === 'startDate' || pickerField === 'startTime'
+              ? startDateTime ?? new Date()
+              : endDateTime ?? new Date()
+          }
+          mode={pickerField === 'startTime' || pickerField === 'endTime' ? 'time' : 'date'}
           display="default"
-          onChange={(_, selected) => {
-            if (Platform.OS !== 'ios') {
-              setPickerField(null);
-            }
-            if (!selected) {
-              return;
-            }
-            if (pickerField === 'start') {
-              setStartDateTime(selected);
-            } else {
-              setEndDateTime(selected);
-            }
-          }}
+          onChange={(_, selected) => handleDateChange(selected, pickerField)}
         />
       ) : null}
     </ScrollView>
@@ -254,7 +321,21 @@ export function EventForm({ initialValues, submitLabel, onSubmit }: EventFormPro
 const styles = StyleSheet.create({
   container: {
     padding: Spacing.lg,
+    gap: Spacing.xl,
+    paddingBottom: Spacing.xxl || 40,
+  },
+  sectionCard: {
+    padding: Spacing.lg,
     gap: Spacing.md,
+    borderWidth: 0,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  sectionHeader: {
+    marginBottom: Spacing.xs,
   },
   categoryRow: {
     flexDirection: 'row',
@@ -263,23 +344,43 @@ const styles = StyleSheet.create({
   },
   categoryChip: {
     borderRadius: Radius.full,
+    opacity: 0.5,
   },
   categoryChipSelected: {
-    borderWidth: 1,
-    borderColor: Colors.borderStrong,
+    opacity: 1,
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   inputPressable: {
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.borderDefault,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.md,
   },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.sm,
     marginTop: Spacing.sm,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+  },
+  flex1: {
+    flex: 1,
+  },
+  submitContainer: {
+    marginTop: Spacing.sm,
+  },
+  inlinePicker: {
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.md,
+    overflow: 'hidden',
   },
 });
