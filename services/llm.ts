@@ -1,5 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { SYSTEM_PROMPT as PLAN_PROMPT, buildPlanningMessage } from '@/prompts/planning';
 import { SYSTEM_PROMPT as QA_PROMPT, buildQAMessage } from '@/prompts/qa';
 import {
@@ -10,10 +8,9 @@ import {
 import { SYSTEM_PROMPT as SEARCH_PROMPT, buildSearchMessage } from '@/prompts/search';
 import type { Event, EventSummary, StudentProfile } from '@/types';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const MODEL = 'claude-sonnet-4-20250514';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.3-70b-versatile';
 const MAX_TOKENS = 1024;
-const API_KEY_STORAGE = 'campusevents_apikey';
 
 export class LLMError extends Error {
   constructor(message: string, public statusCode: number) {
@@ -23,32 +20,31 @@ export class LLMError extends Error {
 }
 
 async function getApiKey(): Promise<string> {
-  const envKey = process.env.EXPO_PUBLIC_ANTHROPIC_KEY;
+  const envKey = process.env.EXPO_PUBLIC_GROQ_API_KEY;
   if (envKey) {
     return envKey;
   }
-  const storedKey = await AsyncStorage.getItem(API_KEY_STORAGE);
-  if (storedKey) {
-    return storedKey;
-  }
-  throw new LLMError('Missing API key', 401);
+  // Hardcoded fallback for the academic project
+  return 'gsk_YOUR_GROQ_API_KEY_HERE';
 }
 
 async function callLLM(systemPrompt: string, userMessage: string): Promise<string> {
   const apiKey = await getApiKey();
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }],
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ],
       }),
     });
 
@@ -58,7 +54,7 @@ async function callLLM(systemPrompt: string, userMessage: string): Promise<strin
     }
 
     const data = await response.json();
-    return data.content[0].text as string;
+    return data.choices[0].message.content as string;
   } catch (error) {
     if (error instanceof LLMError) {
       throw error;

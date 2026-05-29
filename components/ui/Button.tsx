@@ -81,13 +81,13 @@ export function Button({
     <Pressable
       {...props}
       disabled={isDisabled}
-      style={({ pressed }) => [
+      style={(state) => [
         styles.button,
         SIZE_STYLES[size],
         fullWidth && styles.fullWidth,
         variantStyle,
-        pressed && !isDisabled && styles.pressed,
-        style,
+        state.pressed && !isDisabled && styles.pressed,
+        typeof style === 'function' ? style(state) : style,
       ]}>
       <View style={styles.content}>
         {iconLeft ? <Icon name={iconLeft} size={iconSize} color={textColor} /> : null}
