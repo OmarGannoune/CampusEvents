@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 
 import type { Registration } from '@/types';
 
@@ -38,9 +39,11 @@ export function useRegistrations(userId: string): UseRegistrationsResult {
     }
   }, [userId]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const registerEvent = (eventId: string) => {
     register(eventId, userId);

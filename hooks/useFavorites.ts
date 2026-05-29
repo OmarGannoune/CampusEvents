@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 
 import type { Event } from '@/types';
 
@@ -37,9 +38,11 @@ export function useFavorites(userId: string): UseFavoritesResult {
     }
   }, [userId]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const toggleFavorite = (eventId: string) => {
     if (favoriteEventIds.includes(eventId)) {
