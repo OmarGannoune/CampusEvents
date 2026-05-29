@@ -23,6 +23,6 @@ export function SearchBar({ value, onChangeText }: SearchBarProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
   },
 });

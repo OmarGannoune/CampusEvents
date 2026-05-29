@@ -1,11 +1,10 @@
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
+import { CategoryChip } from '@/components/ui/CategoryChip';
+import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
 import { Radius, Spacing } from '@/constants/spacing';
 import type { EventCategory } from '@/types';
-
-import { CategoryChip } from '@/components/ui/CategoryChip';
-import { Text } from '@/components/ui/Text';
 
 type FilterChipsProps = {
   selected: EventCategory | 'all';
@@ -16,53 +15,88 @@ const CATEGORIES: EventCategory[] = ['Talk', 'Workshop', 'Club', 'Exam', 'Other'
 
 export function FilterChips({ selected, onSelect }: FilterChipsProps) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
-      <Pressable onPress={() => onSelect('all')}>
-        <View style={[styles.allChip, selected === 'all' && styles.allChipActive]}>
-          <Text
-            variant="label"
-            color={selected === 'all' ? Colors.textOnDark : Colors.purple}
-            style={styles.allText}>
-            Tous
-          </Text>
-        </View>
-      </Pressable>
-      {CATEGORIES.map((category) => (
-        <Pressable key={category} onPress={() => onSelect(category)}>
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}>
+        <Pressable onPress={() => onSelect('all')} style={styles.chipPressable}>
           <View
             style={[
-              styles.categoryWrapper,
-              selected === category && { borderColor: Colors.borderStrong, borderWidth: 1 },
+              styles.allChipBase,
+              selected === 'all' ? styles.allChipSelected : styles.allChipUnselected,
             ]}>
-            <CategoryChip category={category} size="sm" />
+            <Text
+              variant="caption"
+              color={selected === 'all' ? Colors.textOnDark : Colors.textPrimary}
+              style={styles.chipText}>
+              Tous
+            </Text>
           </View>
         </Pressable>
-      ))}
-    </ScrollView>
+        {CATEGORIES.map((category) => {
+          const isSelected = selected === category;
+          return (
+            <Pressable
+              key={category}
+              onPress={() => onSelect(category)}
+              style={[styles.chipPressable, !isSelected && styles.chipUnselected]}>
+              <View pointerEvents="none" style={isSelected ? styles.selectedShadow : null}>
+                <CategoryChip category={category} size="md" />
+              </View>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
+  container: {
+    flexShrink: 1, // Ensures it doesn't push right-aligned elements off-screen
   },
-  allChip: {
+  scrollContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    paddingRight: Spacing.sm, // Little extra padding at the end of the scroll
+  },
+  chipPressable: {
+    alignSelf: 'center',
+  },
+  chipUnselected: {
+    opacity: 0.45,
+  },
+  selectedShadow: {
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  allChipBase: {
     borderRadius: Radius.full,
     borderWidth: 1,
-    borderColor: Colors.borderStrong,
+    paddingVertical: 4,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
   },
-  allChipActive: {
+  allChipSelected: {
     backgroundColor: Colors.purple,
     borderColor: Colors.purple,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  allText: {
-    fontWeight: '500',
+  allChipUnselected: {
+    backgroundColor: Colors.surface,
+    borderColor: Colors.borderStrong,
   },
-  categoryWrapper: {
-    borderRadius: Radius.full,
+  chipText: {
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
 });

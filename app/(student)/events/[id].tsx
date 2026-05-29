@@ -1,13 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { FavoriteButton } from '@/components/student/FavoriteButton';
 import { RegistrationButton } from '@/components/student/RegistrationButton';
 import { CategoryChip } from '@/components/ui/CategoryChip';
 import { Divider } from '@/components/ui/Divider';
 import { Icon } from '@/components/ui/Icon';
+import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { TagPill } from '@/components/ui/TagPill';
 import { Text } from '@/components/ui/Text';
 import { Colors } from '@/constants/colors';
@@ -29,6 +29,8 @@ export default function EventDetailScreen() {
     user?.email ?? ''
   );
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     if (!params.id) {
       return;
@@ -36,12 +38,18 @@ export default function EventDetailScreen() {
     setEvent(getEventById(params.id));
   }, [params.id]);
 
-  const refreshEvent = () => {
+  const refreshEvent = useCallback(() => {
     if (!params.id) {
       return;
     }
     setEvent(getEventById(params.id));
-  };
+  }, [params.id]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refreshEvent();
+    setTimeout(() => setRefreshing(false), 800);
+  }, [refreshEvent]);
 
   const isRegistered = event ? registeredEventIds.includes(event.id) : false;
 
@@ -65,11 +73,7 @@ export default function EventDetailScreen() {
   if (!event) {
     return (
       <View style={styles.container}>
-        <LinearGradient colors={[Colors.dark, '#4C1D95']} style={styles.banner}>
-          <Pressable onPress={() => router.back()}>
-            <Icon name="arrow-left" size={16} color={Colors.textOnDark} />
-          </Pressable>
-        </LinearGradient>
+        <ScreenHeader title="Événement" showBack onBack={() => router.back()} />
       </View>
     );
   }
@@ -93,22 +97,31 @@ export default function EventDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={[Colors.dark, '#4C1D95']} style={styles.banner}>
-        <View style={styles.bannerTop}>
-          <Pressable onPress={() => router.back()}>
-            <Icon name="arrow-left" size={16} color={Colors.textOnDark} />
-          </Pressable>
+      <ScreenHeader
+        title="Détails"
+        showBack
+        onBack={() => router.back()}
+        rightElement={
           <FavoriteButton
             isFavorited={favoriteEventIds.includes(event.id)}
             onPress={() => toggleFavorite(event.id)}
           />
-        </View>
-        <View style={styles.bannerBottom}>
+        }
+      />
+
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[Colors.purple]}
+            tintColor={Colors.purple}
+          />
+        }>
+        <View style={styles.categoryWrapper}>
           <CategoryChip category={event.category} size="sm" />
         </View>
-      </LinearGradient>
-
-      <ScrollView contentContainerStyle={styles.content}>
         <Text variant="sectionTitle" color={Colors.textPrimary}>
           {event.title}
         </Text>
@@ -172,19 +185,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.surface,
   },
-  banner: {
-    height: 90,
-    paddingTop: 36,
-    paddingHorizontal: Spacing.lg,
-    justifyContent: 'space-between',
-  },
-  bannerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  bannerBottom: {
-    paddingBottom: Spacing.sm,
+  categoryWrapper: {
+    alignSelf: 'flex-start',
   },
   content: {
     padding: Spacing.lg,
