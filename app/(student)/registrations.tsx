@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: Spacing.md,
-    paddingBottom: Spacing.xl,
+    paddingBottom: 120, // Increased to account for the floating tab bar
   },
   sectionTitle: {
     marginBottom: Spacing.sm,
