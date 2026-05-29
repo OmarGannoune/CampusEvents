@@ -34,7 +34,7 @@ export default function AssistantPlanningScreen() {
     if (!constraints.trim()) return;
     try {
       setLoading(true);
-      const res = await llmService.plan(constraints, events, profile);
+      const res = await llmService.plan(user?.email || '', constraints, events, profile);
       const parsed = JSON.parse(res);
       setResult(parsed);
     } catch (e) {

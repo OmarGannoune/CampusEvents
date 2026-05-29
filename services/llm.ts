@@ -1,3 +1,4 @@
+import { getLatestResult, saveResult } from '@/database/llmResults';
 import { SYSTEM_PROMPT as PLAN_PROMPT, buildPlanningMessage } from '@/prompts/planning';
 import { SYSTEM_PROMPT as QA_PROMPT, buildQAMessage } from '@/prompts/qa';
 import {
@@ -6,7 +7,7 @@ import {
     type UserHistory,
 } from '@/prompts/recommendations';
 import { SYSTEM_PROMPT as SEARCH_PROMPT, buildSearchMessage } from '@/prompts/search';
-import type { Event, EventSummary, StudentProfile } from '@/types';
+import type { Event, EventSummary, LLMResultType, StudentProfile } from '@/types';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL = 'llama-3.3-70b-versatile';
@@ -95,28 +96,50 @@ function limitEventSummaries(events: Event[]): EventSummary[] {
 }
 
 export const llmService = {
-  search: async (query: string, events: Event[]) => {
+  search: async (userId: string, query: string, events: Event[]) => {
+    const cached = getLatestResult(userId, 'search', query);
+    if (cached) return cached.outputText;
+
     const summaries = limitEventSummaries(events);
     const message = buildSearchMessage(query, summaries);
-    return callLLM(SEARCH_PROMPT, message);
+    const response = await callLLM(SEARCH_PROMPT, message);
+    saveResult({ userId, type: 'search', inputText: query, outputText: response });
+    return response;
   },
   recommend: async (
+    userId: string,
     history: UserHistory,
     upcomingEvents: Event[],
     profile?: StudentProfile | null
   ) => {
+    const inputText = JSON.stringify(history);
+    const cached = getLatestResult(userId, 'recommendation', inputText);
+    if (cached) return cached.outputText;
+
     const summaries = limitEventSummaries(upcomingEvents);
     const message = buildRecommendationMessage(history, summaries, profile);
-    return callLLM(RECO_PROMPT, message);
+    const response = await callLLM(RECO_PROMPT, message);
+    saveResult({ userId, type: 'recommendation', inputText, outputText: response });
+    return response;
   },
-  plan: async (constraints: string, weekEvents: Event[], profile?: StudentProfile | null) => {
+  plan: async (userId: string, constraints: string, weekEvents: Event[], profile?: StudentProfile | null) => {
+    const cached = getLatestResult(userId, 'planning', constraints);
+    if (cached) return cached.outputText;
+
     const summaries = limitEventSummaries(weekEvents);
     const message = buildPlanningMessage(constraints, summaries, profile);
-    return callLLM(PLAN_PROMPT, message);
+    const response = await callLLM(PLAN_PROMPT, message);
+    saveResult({ userId, type: 'planning', inputText: constraints, outputText: response });
+    return response;
   },
-  answerQuestion: async (question: string, allEvents: Event[]) => {
+  answerQuestion: async (userId: string, question: string, allEvents: Event[]) => {
+    const cached = getLatestResult(userId, 'qa', question);
+    if (cached) return cached.outputText;
+
     const summaries = limitEventSummaries(allEvents);
     const message = buildQAMessage(question, summaries);
-    return callLLM(QA_PROMPT, message);
+    const response = await callLLM(QA_PROMPT, message);
+    saveResult({ userId, type: 'qa', inputText: question, outputText: response });
+    return response;
   },
 };

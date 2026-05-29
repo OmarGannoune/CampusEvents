@@ -31,7 +31,7 @@ export default function AssistantSearchScreen() {
     if (!query.trim()) return;
     try {
       setLoading(true);
-      const res = await llmService.search(query, events);
+      const res = await llmService.search(user?.email || '', query, events);
       const parsed = JSON.parse(res);
       setResults(parsed.results || []);
     } catch (e) {

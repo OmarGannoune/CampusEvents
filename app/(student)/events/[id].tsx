@@ -1,7 +1,16 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 import { FavoriteButton } from '@/components/student/FavoriteButton';
 import { RegistrationButton } from '@/components/student/RegistrationButton';
@@ -97,6 +106,40 @@ export default function EventDetailScreen() {
     return `${date} · ${startTime} - ${endTime}`;
   })();
 
+  const handleShare = async () => {
+    if (!event) return;
+    try {
+      const message = `Rejoins-moi à l'événement "${event.title}" le ${formattedDate} à ${event.locationName} ! 🎓`;
+      await Share.share({ message });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
+  const scheduleReminder = async () => {
+    if (!event) return;
+    const eventDate = new Date(event.startDateTime);
+    const triggerDate = new Date(eventDate.getTime() - 2 * 60 * 60 * 1000); // 2 hours before
+
+    if (triggerDate.getTime() > Date.now()) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') return;
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Rappel CampusEvents 📅",
+          body: `L'événement "${event.title}" commence dans 2 heures à ${event.locationName}!`,
+        },
+        trigger: { date: triggerDate, type: 'date' },
+      });
+    }
+  };
+
   const bottomBarOffset = Math.max(insets.bottom, Spacing.md) + 70; // 70px to clear the floating tab bar
 
   return (
@@ -106,10 +149,15 @@ export default function EventDetailScreen() {
         showBack
         onBack={() => router.back()}
         rightElement={
-          <FavoriteButton
-            isFavorited={favoriteEventIds.includes(event.id)}
-            onPress={() => toggleFavorite(event.id)}
-          />
+          <View style={{ flexDirection: 'row', gap: Spacing.md, alignItems: 'center' }}>
+            <Pressable onPress={handleShare}>
+              <Icon name="share" size={20} color={Colors.textSecondary} />
+            </Pressable>
+            <FavoriteButton
+              isFavorited={favoriteEventIds.includes(event.id)}
+              onPress={() => toggleFavorite(event.id)}
+            />
+          </View>
         }
       />
 
@@ -172,6 +220,7 @@ export default function EventDetailScreen() {
           status={registrationStatus}
           onRegister={() => {
             registerEvent(event.id);
+            scheduleReminder();
             refreshEvent();
           }}
           onCancel={() => {

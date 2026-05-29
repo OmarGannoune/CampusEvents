@@ -20,6 +20,7 @@ import {
     UserCircle,
     Users,
     WifiOff,
+    Share2,
 } from 'lucide-react-native';
 import type { ComponentProps } from 'react';
 
@@ -47,6 +48,7 @@ const ICONS = {
   'user-circle': UserCircle,
   users: Users,
   'wifi-off': WifiOff,
+  share: Share2,
 } as const;
 
 export type IconName = keyof typeof ICONS;

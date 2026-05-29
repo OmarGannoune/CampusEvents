@@ -41,7 +41,7 @@ export default function AssistantRecommendationsScreen() {
         registered: registeredEvents.map(e => ({ title: e.title, category: e.category, tags: e.tags }))
       };
       
-      const res = await llmService.recommend(history, events, profile);
+      const res = await llmService.recommend(user?.email || '', history, events, profile);
       const parsed = JSON.parse(res);
       setResults(parsed.recommendations || []);
     } catch (e) {

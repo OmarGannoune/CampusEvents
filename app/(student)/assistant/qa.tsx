@@ -31,7 +31,7 @@ export default function AssistantQAScreen() {
     if (!question.trim()) return;
     try {
       setLoading(true);
-      const res = await llmService.answerQuestion(question, events);
+      const res = await llmService.answerQuestion(user?.email || '', question, events);
       setResult(JSON.parse(res));
     } catch (e) {
       console.error('QA Error:', e);
